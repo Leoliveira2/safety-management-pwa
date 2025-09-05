@@ -225,10 +225,6 @@
                 <input type="text" id="bodyPart">
             </div>
             <div class="form-group">
-                <label for="description">Descrição Detalhada:</label>
-                <textarea id="description" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
                 <label for="manager">Gerência Responsável:</label>
                 <input type="text" id="manager" required>
             </div>
@@ -385,22 +381,50 @@
 
         createOrUpdateChart(chartId, data, type, title, isMonthly = false, isHorizontal = false) {
             const ctx = document.getElementById(chartId).getContext('2d');
-            const chartData = isMonthly ? {
-                labels: data.labels,
-                datasets: [{
-                    label: title,
-                    data: data.data,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            } : {
-                labels: Object.keys(data),
-                datasets: [{
-                    label: title,
-                    data: Object.values(data),
-                    backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#fd7e14', '#6610f2']
-                }]
-            };
+            const isSeverityChart = chartId === 'severityChart';
+
+            let chartData = {};
+            if (isMonthly) {
+                chartData = {
+                    labels: data.labels,
+                    datasets: [{
+                        label: title,
+                        data: data.data,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                };
+            } else {
+                let backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#fd7e14', '#6610f2'];
+                if (isSeverityChart) {
+                    const order = ['Leve', 'Moderada', 'Grave'];
+                    const sortedLabels = Object.keys(data).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+                    const sortedValues = sortedLabels.map(key => data[key]);
+                    const colors = sortedLabels.map(label => {
+                        if (label === 'Leve') return '#28a745';
+                        if (label === 'Moderada') return '#ffc107';
+                        if (label === 'Grave') return '#dc3545';
+                        return '#ccc';
+                    });
+                    chartData = {
+                        labels: sortedLabels,
+                        datasets: [{
+                            label: title,
+                            data: sortedValues,
+                            backgroundColor: colors
+                        }]
+                    };
+                } else {
+                    chartData = {
+                        labels: Object.keys(data),
+                        datasets: [{
+                            label: title,
+                            data: Object.values(data),
+                            backgroundColor: backgroundColors
+                        }]
+                    };
+                }
+            }
 
             const options = {
                 responsive: true,
@@ -637,7 +661,6 @@
             const csv = [
                 headers.join(','),
                 ...this.occurrences.map(row => headers.map(fieldName => JSON.stringify(row[fieldName], (key, value) => {
-                    // Handle case where value might contain commas or newlines
                     if (typeof value === 'string') {
                         return value.replace(/"/g, '""');
                     }
@@ -657,7 +680,45 @@
         }
     }
 
+    function generateRandomData() {
+        const locations = ['Área de Produção', 'Almoxarifado', 'Escritório', 'Manutenção', 'Expedição', 'Outro'];
+        const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
+        const severities = ['Leve', 'Moderada', 'Grave'];
+        const types = ['Acidente', 'Incidente'];
+        const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
+        const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
+
+        const occurrences = [];
+        const today = dayjs();
+        for (let i = 1; i <= 300; i++) {
+            const randomDays = Math.floor(Math.random() * 730);
+            const randomDate = today.subtract(randomDays, 'day').format('YYYY-MM-DD');
+            const randomTime = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
+
+            occurrences.push({
+                id: i,
+                date: randomDate,
+                time: randomTime,
+                location: locations[Math.floor(Math.random() * locations.length)],
+                category: categories[Math.floor(Math.random() * categories.length)],
+                severity: severities[Math.floor(Math.random() * severities.length)],
+                type: types[Math.floor(Math.random() * types.length)],
+                highPotential: Math.random() < 0.2,
+                bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
+                description: "Descrição gerada aleatoriamente para simulação.",
+                manager: managers[Math.floor(Math.random() * managers.length)]
+            });
+        }
+        return occurrences;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        const localStorageKey = 'sstOccurrences';
+        if (!localStorage.getItem(localStorageKey)) {
+            const randomData = generateRandomData();
+            localStorage.setItem(localStorageKey, JSON.stringify(randomData));
+        }
+
         new OccurrenceManager();
     });
 </script>
