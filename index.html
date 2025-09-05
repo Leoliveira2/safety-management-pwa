@@ -87,6 +87,9 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            /* Limita a altura do contêiner e adiciona rolagem */
+            max-height: 85vh; /* 85% da altura da tela */
+            overflow-y: auto;
         }
         .stats-card {
             background-color: #fff;
@@ -488,14 +491,8 @@
                 indexAxis: isHorizontal ? 'y' : 'x',
             };
             
-            // Ajuste dinâmico de altura para gráficos de barra horizontais
-            if (isHorizontal && chartData.labels.length > 5) {
-                const baseHeight = 250;
-                const dynamicHeight = chartData.labels.length * 40;
-                document.getElementById(chartId).style.height = `${baseHeight + dynamicHeight}px`;
-            } else {
-                document.getElementById(chartId).style.height = '40vh';
-            }
+            // Ajusta a altura do canvas para que o gráfico caiba no contêiner
+            document.getElementById(chartId).style.height = `${options.maintainAspectRatio === false ? 'auto' : '40vh'}`;
 
             this.charts[chartId] = new Chart(ctx, {
                 type: type,
