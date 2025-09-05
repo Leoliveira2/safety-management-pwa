@@ -112,58 +112,6 @@
             color: #666;
             margin-top: 5px;
         }
-
-        /* Estilos da nova silhueta */
-        .silhouette-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-            max-height: 85vh;
-            overflow-y: auto;
-            min-height: 400px;
-        }
-        .human-silhouette {
-            width: 100%;
-            height: auto;
-            max-width: 300px;
-        }
-        .body-part {
-            fill: #ccc;
-            transition: fill 0.3s ease;
-        }
-        .body-part-label {
-            fill: #000;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .legend {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-        }
-        .color-0 { background-color: #ccc; }
-        .color-1 { background-color: #a5d6a7; }
-        .color-2 { background-color: #81c784; }
-        .color-3 { background-color: #4caf50; }
-        .color-4 { background-color: #ffc107; }
-        .color-5 { background-color: #ff9800; }
-        .color-6 { background-color: #dc3545; }
-
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -238,12 +186,14 @@
                     <label for="occurrenceBodyPart">Parte do Corpo:</label>
                     <select id="occurrenceBodyPart">
                         <option value="">Selecione</option>
-                        <option value="Cabeca">Cabeça</option>
+                        <option value="Mão">Mão</option>
+                        <option value="Cabeça">Cabeça</option>
+                        <option value="Joelho">Joelho</option>
+                        <option value="Braço">Braço</option>
+                        <option value="Perna">Perna</option>
                         <option value="Tronco">Tronco</option>
-                        <option value="Bracos">Braços</option>
-                        <option value="Maos">Mãos</option>
-                        <option value="Pernas">Pernas</option>
-                        <option value="Pes">Pés</option>
+                        <option value="Olho">Olho</option>
+                        <option value="Pé">Pé</option>
                         <option value="Outra">Outra</option>
                     </select>
                 </div>
@@ -330,46 +280,8 @@
                 <div class="chart-container">
                     <canvas id="occurrencesByLocationChart"></canvas>
                 </div>
-                <div class="silhouette-container">
-                    <h3>Ocorrências por Parte do Corpo</h3>
-                    <svg id="humanSilhouette" class="human-silhouette" viewBox="0 0 160 300">
-                        <g id="Cabeca">
-                            <circle cx="80" cy="30" r="25" class="body-part" />
-                            <text x="80" y="30" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Cabeca"></text>
-                        </g>
-                        <g id="Tronco">
-                            <rect x="50" y="55" width="60" height="90" rx="10" ry="10" class="body-part" />
-                            <text x="80" y="100" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Tronco"></text>
-                        </g>
-                        <g id="Bracos">
-                            <path d="M48,65 L20,120 L30,125 L58,70 Z" class="body-part" />
-                            <path d="M112,65 L140,120 L130,125 L102,70 Z" class="body-part" />
-                            <text x="80" y="125" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Bracos"></text>
-                        </g>
-                        <g id="Maos">
-                            <circle cx="20" cy="125" r="8" class="body-part" />
-                            <circle cx="140" cy="125" r="8" class="body-part" />
-                            <text x="80" y="150" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Maos"></text>
-                        </g>
-                        <g id="Pernas">
-                            <path d="M60,145 L60,250 L65,250 L65,145 Z" class="body-part" />
-                            <path d="M100,145 L100,250 L95,250 L95,145 Z" class="body-part" />
-                            <text x="80" y="200" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Pernas"></text>
-                        </g>
-                        <g id="Pes">
-                            <rect x="55" y="250" width="10" height="15" class="body-part" />
-                            <rect x="95" y="250" width="10" height="15" class="body-part" />
-                            <text x="80" y="265" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Pes"></text>
-                        </g>
-                    </svg>
-                    <div class="legend">
-                        <div class="legend-item"><div class="legend-color color-1"></div>1 a 5</div>
-                        <div class="legend-item"><div class="legend-color color-2"></div>6 a 10</div>
-                        <div class="legend-item"><div class="legend-color color-3"></div>11 a 20</div>
-                        <div class="legend-item"><div class="legend-color color-4"></div>21 a 30</div>
-                        <div class="legend-item"><div class="legend-color color-5"></div>31 a 50</div>
-                        <div class="legend-item"><div class="legend-color color-6"></div>> 50</div>
-                    </div>
+                <div class="chart-container">
+                    <canvas id="occurrencesByBodyPartChart"></canvas>
                 </div>
                 <div class="chart-container" style="grid-column: 1 / -1;">
                     <canvas id="cControlChart"></canvas>
@@ -414,6 +326,7 @@
                 const idField = document.getElementById('occurrenceId');
                 const dateField = document.getElementById('occurrenceDate');
 
+                // Definir ID automático e data atual
                 idField.value = this.generateId();
                 dateField.value = dayjs().format('YYYY-MM-DD');
 
@@ -463,7 +376,7 @@
                 const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
                 const severities = ['Leve', 'Moderada', 'Grave'];
                 const types = ['Acidente', 'Incidente'];
-                const bodyParts = ['Cabeca', 'Tronco', 'Bracos', 'Maos', 'Pernas', 'Pes', 'Outra'];
+                const bodyParts = ['Mão', 'Cabeça', 'Joelho', 'Braço', 'Perna', 'Tronco', 'Olho', 'Pé'];
                 const locations = ['Área de Produção', 'Escritório', 'Almoxarifado', 'Laboratório', 'Oficina', 'Pátio'];
                 const managements = ['Produção', 'Manutenção', 'RH', 'Qualidade', 'Logística'];
 
@@ -503,6 +416,7 @@
                 this.createOccurrencesByCategoryChart();
                 this.createOccurrencesBySeverityChart();
                 this.createOccurrencesByLocationChart();
+                this.createOccurrencesByBodyPartChart();
                 this.createCControlChart();
                 this.initializeFilters();
                 this.updateDashboards();
@@ -568,7 +482,7 @@
                 this.updateOccurrencesByCategoryChart(filteredOccurrences);
                 this.updateOccurrencesBySeverityChart(filteredOccurrences);
                 this.updateOccurrencesByLocationChart(filteredOccurrences);
-                this.renderBodySilhouette(filteredOccurrences); 
+                this.updateOccurrencesByBodyPartChart(filteredOccurrences);
                 this.updateCControlChart(filteredOccurrences);
             }
 
@@ -581,38 +495,42 @@
                 const accidents = data.filter(o => o.type === 'Acidente').length;
                 const incidents = data.filter(o => o.type === 'Incidente').length;
                 const highPotential = data.filter(o => o.highPotential).length;
-                const grave = data.filter(o => o.severity === 'Grave').length;
 
                 const stats = [
                     { label: 'Total de Ocorrências', value: total },
                     { label: 'Acidentes', value: accidents },
                     { label: 'Incidentes', value: incidents },
-                    { label: 'Alto Potencial', value: highPotential, color: '#ffc107' }, // Amarelo
-                    { label: 'Ocorrências Graves', value: grave, color: '#dc3545' } // Vermelho
+                    { label: 'Alto Potencial', value: highPotential }
                 ];
 
                 stats.forEach(stat => {
                     const card = document.createElement('div');
                     card.className = 'stat-card';
-                    if (stat.color) {
-                        card.style.backgroundColor = stat.color;
-                        card.style.color = '#fff';
-                        card.querySelector('.stat-number').style.color = '#fff';
-                        card.querySelector('.stat-label').style.color = '#fff';
-                    }
                     card.innerHTML = `<div class="stat-number">${stat.value}</div><div class="stat-label">${stat.label}</div>`;
                     summaryContainer.appendChild(card);
                 });
             }
 
+            // Criar gráfico de ocorrências por mês
             createOccurrencesByMonthChart() {
                 const ctx = document.getElementById('occurrencesByMonthChart').getContext('2d');
-                this.monthChart = new Chart(ctx, { type: 'line', data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], tension: 0.1 }] }, options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Mês' } } } });
+                this.monthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], tension: 0.1 }] },
+                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Mês' } } }
+                });
             }
+
             updateOccurrencesByMonthChart(data) {
                 const monthlyData = {};
-                for (let i = 1; i <= 12; i++) { monthlyData[i] = 0; }
-                data.forEach(o => { if (o.month) { monthlyData[o.month]++; } });
+                for (let i = 1; i <= 12; i++) {
+                    monthlyData[i] = 0;
+                }
+                data.forEach(o => {
+                    if (o.month) {
+                        monthlyData[o.month]++;
+                    }
+                });
                 const labels = Object.keys(monthlyData).map(m => dayjs().month(m - 1).format('MMM'));
                 const chartData = Object.values(monthlyData);
                 this.monthChart.data.labels = labels;
@@ -620,34 +538,43 @@
                 this.monthChart.update();
             }
 
+            // Criar gráfico de ocorrências por tipo
             createOccurrencesByTypeChart() {
                 const ctx = document.getElementById('occurrencesByTypeChart').getContext('2d');
-                this.typeChart = new Chart(ctx, { type: 'doughnut', data: { labels: [], datasets: [{ data: [] }] }, options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Tipo' } } } });
+                this.typeChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: [], datasets: [{ data: [] }] },
+                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Tipo' } } }
+                });
             }
+
             updateOccurrencesByTypeChart(data) {
-                const typeCounts = data.reduce((acc, o) => { acc[o.type] = (acc[o.type] || 0) + 1; return acc; }, {});
+                const typeCounts = data.reduce((acc, o) => {
+                    acc[o.type] = (acc[o.type] || 0) + 1;
+                    return acc;
+                }, {});
                 const labels = Object.keys(typeCounts);
                 const chartData = Object.values(typeCounts);
-                
-                // Definir cores com base no tipo
-                const backgroundColors = labels.map(label => {
-                    if (label === 'Acidente') return '#dc3545'; // Vermelho
-                    if (label === 'Incidente') return '#ffc107'; // Amarelo
-                    return '#6c757d'; // Cinza para outros
-                });
-
                 this.typeChart.data.labels = labels;
                 this.typeChart.data.datasets[0].data = chartData;
-                this.typeChart.data.datasets[0].backgroundColor = backgroundColors;
                 this.typeChart.update();
             }
 
+            // Criar gráfico de ocorrências por categoria
             createOccurrencesByCategoryChart() {
                 const ctx = document.getElementById('occurrencesByCategoryChart').getContext('2d');
-                this.categoryChart = new Chart(ctx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Categorias', data: [] }] }, options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Categoria' } } } });
+                this.categoryChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [{ label: 'Categorias', data: [] }] },
+                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Categoria' } } }
+                });
             }
+
             updateOccurrencesByCategoryChart(data) {
-                const categoryCounts = data.reduce((acc, o) => { acc[o.category] = (acc[o.category] || 0) + 1; return acc; }, {});
+                const categoryCounts = data.reduce((acc, o) => {
+                    acc[o.category] = (acc[o.category] || 0) + 1;
+                    return acc;
+                }, {});
                 const labels = Object.keys(categoryCounts);
                 const chartData = Object.values(categoryCounts);
                 this.categoryChart.data.labels = labels;
@@ -655,42 +582,43 @@
                 this.categoryChart.update();
             }
 
+            // Criar gráfico de ocorrências por gravidade
             createOccurrencesBySeverityChart() {
                 const ctx = document.getElementById('occurrencesBySeverityChart').getContext('2d');
-                this.severityChart = new Chart(ctx, { type: 'pie', data: { labels: [], datasets: [{ data: [] }] }, options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Gravidade' } } } });
+                this.severityChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: { labels: [], datasets: [{ data: [] }] },
+                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Gravidade' } } }
+                });
             }
-            updateOccurrencesBySeverityChart(data) {
-                const severityCounts = data.reduce((acc, o) => { acc[o.severity] = (acc[o.severity] || 0) + 1; return acc; }, {});
-                const labels = Object.keys(severityCounts).sort((a,b) => {
-                    const order = ['Leve', 'Moderada', 'Grave'];
-                    return order.indexOf(a) - order.indexOf(b);
-                });
-                const chartData = labels.map(label => severityCounts[label]);
-                
-                // Definir cores com base na gravidade
-                const backgroundColors = labels.map(label => {
-                    if (label === 'Leve') return '#ffc107'; // Amarelo
-                    if (label === 'Moderada') return '#ff9800'; // Laranja
-                    if (label === 'Grave') return '#dc3545'; // Vermelho
-                    return '#6c757d'; // Cinza para outros
-                });
-                
-                // NOTA: Para um evento fatal, você poderia adicionar uma condição aqui,
-                // como por exemplo: if (label === 'Grave' && o.isFatal) return '#000000';
-                // O campo 'isFatal' precisaria ser adicionado ao formulário e aos dados.
 
+            updateOccurrencesBySeverityChart(data) {
+                const severityCounts = data.reduce((acc, o) => {
+                    acc[o.severity] = (acc[o.severity] || 0) + 1;
+                    return acc;
+                }, {});
+                const labels = Object.keys(severityCounts);
+                const chartData = Object.values(severityCounts);
                 this.severityChart.data.labels = labels;
                 this.severityChart.data.datasets[0].data = chartData;
-                this.severityChart.data.datasets[0].backgroundColor = backgroundColors;
                 this.severityChart.update();
             }
 
+            // Criar gráfico de ocorrências por localização
             createOccurrencesByLocationChart() {
                 const ctx = document.getElementById('occurrencesByLocationChart').getContext('2d');
-                this.locationChart = new Chart(ctx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Localizações', data: [] }] }, options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Localização' } } } });
+                this.locationChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [{ label: 'Localizações', data: [] }] },
+                    options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Localização' } } }
+                });
             }
+
             updateOccurrencesByLocationChart(data) {
-                const locationCounts = data.reduce((acc, o) => { acc[o.location] = (acc[o.location] || 0) + 1; return acc; }, {});
+                const locationCounts = data.reduce((acc, o) => {
+                    acc[o.location] = (acc[o.location] || 0) + 1;
+                    return acc;
+                }, {});
                 const labels = Object.keys(locationCounts);
                 const chartData = Object.values(locationCounts);
                 this.locationChart.data.labels = labels;
@@ -698,64 +626,109 @@
                 this.locationChart.update();
             }
 
-            renderBodySilhouette(data) {
+            // Criar gráfico de ocorrências por parte do corpo
+            createOccurrencesByBodyPartChart() {
+                const ctx = document.getElementById('occurrencesByBodyPartChart').getContext('2d');
+                this.bodyPartChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [{ label: 'Partes do Corpo', data: [] }] },
+                    options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Parte do Corpo' } } }
+                });
+            }
+
+            updateOccurrencesByBodyPartChart(data) {
                 const bodyPartCounts = data.reduce((acc, o) => {
                     acc[o.bodyPart] = (acc[o.bodyPart] || 0) + 1;
                     return acc;
                 }, {});
+                const labels = Object.keys(bodyPartCounts);
+                const chartData = Object.values(bodyPartCounts);
+                this.bodyPartChart.data.labels = labels;
+                this.bodyPartChart.data.datasets[0].data = chartData;
+                this.bodyPartChart.update();
+            }
 
-                const bodyParts = ['Cabeca', 'Tronco', 'Bracos', 'Maos', 'Pernas', 'Pes'];
-
-                const getColorClass = (count) => {
-                    if (count === 0) return 'color-0';
-                    if (count >= 1 && count <= 5) return 'color-1';
-                    if (count >= 6 && count <= 10) return 'color-2';
-                    if (count >= 11 && count <= 20) return 'color-3';
-                    if (count >= 21 && count <= 30) return 'color-4';
-                    if (count >= 31 && count <= 50) return 'color-5';
-                    if (count > 50) return 'color-6';
-                    return 'color-0';
-                };
-
-                document.querySelectorAll('.body-part').forEach(el => el.style.fill = '#ccc');
-                document.querySelectorAll('.body-part-label').forEach(el => el.textContent = '');
-
-                bodyParts.forEach(part => {
-                    const count = bodyPartCounts[part] || 0;
-                    const silhouettePart = document.getElementById(part);
-                    const label = document.getElementById(`label-${part}`);
-
-                    if (silhouettePart) {
-                        const colorClass = getColorClass(count);
-                        const colorElement = document.querySelector(`.legend-color.${colorClass}`);
-                        if (colorElement) {
-                            silhouettePart.style.fill = colorElement.style.backgroundColor;
+            // Criar gráfico de controle c-chart
+            createCControlChart() {
+                const ctx = document.getElementById('cControlChart').getContext('2d');
+                this.cChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Ocorrências',
+                                data: [],
+                                borderColor: 'rgb(75, 192, 192)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                tension: 0
+                            },
+                            {
+                                label: 'Limite Superior (UCL)',
+                                data: [],
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'transparent',
+                                borderDash: [10, 5],
+                                pointRadius: 0,
+                                tension: 0
+                            },
+                            {
+                                label: 'Média (CL)',
+                                data: [],
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'transparent',
+                                borderDash: [10, 5],
+                                pointRadius: 0,
+                                tension: 0
+                            },
+                            {
+                                label: 'Limite Inferior (LCL)',
+                                data: [],
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'transparent',
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                tension: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Gráfico de Controle (c-chart)'
+                            }
                         }
-                    }
-
-                    if (label) {
-                        label.textContent = count > 0 ? count : '';
                     }
                 });
             }
 
-            createCControlChart() {
-                const ctx = document.getElementById('cControlChart').getContext('2d');
-                this.cChart = new Chart(ctx, { type: 'line', data: { labels: [], datasets: [ { label: 'Ocorrências', data: [], borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.5)', tension: 0 }, { label: 'Limite Superior (UCL)', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'transparent', borderDash: [10, 5], pointRadius: 0, tension: 0 }, { label: 'Média (CL)', data: [], borderColor: 'rgb(54, 162, 235)', backgroundColor: 'transparent', borderDash: [10, 5], pointRadius: 0, tension: 0 }, { label: 'Limite Inferior (LCL)', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'transparent', borderDash: [5, 5], pointRadius: 0, tension: 0 } ] }, options: { responsive: true, plugins: { title: { display: true, text: 'Gráfico de Controle (c-chart)' } } } });
-            }
-
             updateCControlChart(data) {
                 const monthlyCounts = {};
-                data.forEach(o => { const monthYear = `${o.year}-${String(o.month).padStart(2, '0')}`; monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1; });
+                data.forEach(o => {
+                    const monthYear = `${o.year}-${String(o.month).padStart(2, '0')}`;
+                    monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1;
+                });
+
                 const sortedMonths = Object.keys(monthlyCounts).sort();
                 const labels = sortedMonths;
                 const counts = sortedMonths.map(m => monthlyCounts[m]);
+
                 const n = counts.length;
-                if (n === 0) { this.cChart.data.labels = []; this.cChart.data.datasets.forEach(ds => ds.data = []); this.cChart.update(); return; }
+                if (n === 0) {
+                    this.cChart.data.labels = [];
+                    this.cChart.data.datasets.forEach(ds => ds.data = []);
+                    this.cChart.update();
+                    return;
+                }
+
                 const cBar = counts.reduce((a, b) => a + b, 0) / n;
                 const ucl = cBar + 3 * Math.sqrt(cBar);
                 const lcl = Math.max(0, cBar - 3 * Math.sqrt(cBar));
+
                 const pointColors = counts.map(c => (c > ucl || c < lcl) ? 'red' : 'rgb(75, 192, 192)');
+
                 this.cChart.data.labels = labels;
                 this.cChart.data.datasets[0].data = counts;
                 this.cChart.data.datasets[0].pointBackgroundColor = pointColors;
