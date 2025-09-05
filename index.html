@@ -133,6 +133,12 @@
         .button-export {
             background-color: #28a745;
             color: #fff;
+        }
+        .button-test {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .button-action {
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
@@ -257,7 +263,8 @@
             <button class="btn-secondary" id="clearFiltersBtn">Limpar Filtros</button>
         </div>
 
-        <button class="button-export" id="exportDataBtn">Exportar Dados para CSV</button>
+        <button class="button-action button-test" id="generateDataBtn">Gerar Dados de Teste</button>
+        <button class="button-action button-export" id="exportDataBtn">Exportar Dados para CSV</button>
 
         <h3>Resumo Estatístico</h3>
         <div class="dashboard-grid">
@@ -354,6 +361,49 @@
                 this.updateDashboards();
                 this.updateFilters();
             }
+        }
+
+        generateRandomOccurrences() {
+            if (confirm('Isso irá apagar todos os dados atuais e criar 300 novos registros. Deseja continuar?')) {
+                this.occurrences = this.generateRandomData();
+                this.saveOccurrences();
+                this.updateDashboards();
+                this.updateFilters();
+                this.updateId();
+                alert('300 novas ocorrências foram geradas com sucesso!');
+            }
+        }
+
+        generateRandomData() {
+            const locations = ['Área de Produção', 'Almoxarifado', 'Escritório', 'Manutenção', 'Expedição', 'Outro'];
+            const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
+            const severities = ['Leve', 'Moderada', 'Grave'];
+            const types = ['Acidente', 'Incidente'];
+            const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
+            const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
+
+            const occurrences = [];
+            const today = dayjs();
+            for (let i = 1; i <= 300; i++) {
+                const randomDays = Math.floor(Math.random() * 730);
+                const randomDate = today.subtract(randomDays, 'day').format('YYYY-MM-DD');
+                const randomTime = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
+
+                occurrences.push({
+                    id: i,
+                    date: randomDate,
+                    time: randomTime,
+                    location: locations[Math.floor(Math.random() * locations.length)],
+                    category: categories[Math.floor(Math.random() * categories.length)],
+                    severity: severities[Math.floor(Math.random() * severities.length)],
+                    type: types[Math.floor(Math.random() * types.length)],
+                    highPotential: Math.random() < 0.2,
+                    bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
+                    description: "Descrição gerada aleatoriamente para simulação.",
+                    manager: managers[Math.floor(Math.random() * managers.length)]
+                });
+            }
+            return occurrences;
         }
 
         updateDashboards(filteredData = this.occurrences) {
@@ -638,9 +688,9 @@
                 this.updateId();
             });
 
+            document.getElementById('generateDataBtn').addEventListener('click', () => this.generateRandomOccurrences());
             document.getElementById('applyFiltersBtn').addEventListener('click', () => this.applyFilters());
             document.getElementById('clearFiltersBtn').addEventListener('click', () => this.clearFilters());
-
             document.getElementById('exportDataBtn').addEventListener('click', () => this.exportDataToCsv());
 
             window.addEventListener('load', () => this.updateId());
@@ -680,45 +730,7 @@
         }
     }
 
-    function generateRandomData() {
-        const locations = ['Área de Produção', 'Almoxarifado', 'Escritório', 'Manutenção', 'Expedição', 'Outro'];
-        const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
-        const severities = ['Leve', 'Moderada', 'Grave'];
-        const types = ['Acidente', 'Incidente'];
-        const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
-        const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
-
-        const occurrences = [];
-        const today = dayjs();
-        for (let i = 1; i <= 300; i++) {
-            const randomDays = Math.floor(Math.random() * 730);
-            const randomDate = today.subtract(randomDays, 'day').format('YYYY-MM-DD');
-            const randomTime = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
-
-            occurrences.push({
-                id: i,
-                date: randomDate,
-                time: randomTime,
-                location: locations[Math.floor(Math.random() * locations.length)],
-                category: categories[Math.floor(Math.random() * categories.length)],
-                severity: severities[Math.floor(Math.random() * severities.length)],
-                type: types[Math.floor(Math.random() * types.length)],
-                highPotential: Math.random() < 0.2,
-                bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
-                description: "Descrição gerada aleatoriamente para simulação.",
-                manager: managers[Math.floor(Math.random() * managers.length)]
-            });
-        }
-        return occurrences;
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-        const localStorageKey = 'sstOccurrences';
-        if (!localStorage.getItem(localStorageKey)) {
-            const randomData = generateRandomData();
-            localStorage.setItem(localStorageKey, JSON.stringify(randomData));
-        }
-
         new OccurrenceManager();
     });
 </script>
