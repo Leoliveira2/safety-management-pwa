@@ -78,12 +78,11 @@
         }
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
         .chart-container {
             position: relative;
-            height: 40vh;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -291,33 +290,33 @@
         </div>
 
         <h3>Ocorrências por Mês (Gráfico de Linha)</h3>
-        <div class="chart-container">
+        <div class="chart-container" style="height: 40vh;">
             <canvas id="monthlyChart"></canvas>
         </div>
 
         <h3>Gráfico de Controle C-Chart</h3>
-        <div class="chart-container">
+        <div class="chart-container" style="height: 40vh;">
             <canvas id="cChart"></canvas>
         </div>
 
         <div class="dashboard-grid" style="margin-top: 20px;">
-            <div class="chart-container">
+            <div class="chart-container" style="height: 40vh;">
                 <h3>Ocorrências por Tipo</h3>
                 <canvas id="typeChart"></canvas>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="height: 40vh;">
                 <h3>Ocorrências por Gravidade</h3>
                 <canvas id="severityChart"></canvas>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="height: 40vh;">
                 <h3>Ocorrências por Categoria</h3>
                 <canvas id="categoryChart"></canvas>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" id="locationChartContainer">
                 <h3>Ocorrências por Localização</h3>
                 <canvas id="locationChart"></canvas>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" id="bodyPartChartContainer">
                 <h3>Ocorrências por Parte do Corpo</h3>
                 <canvas id="bodyPartChart"></canvas>
             </div>
@@ -334,6 +333,7 @@
             this.setupListeners();
             this.updateDashboards();
             this.updateFilters();
+            this.updateId();
         }
 
         loadOccurrences() {
@@ -417,7 +417,6 @@
         }
 
         updateCharts(data) {
-            // Destroy all charts before creating new ones to avoid conflicts
             Object.values(this.charts).forEach(chart => chart.destroy());
             this.charts = {};
 
@@ -446,7 +445,7 @@
                     }]
                 };
             } else {
-                let backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#fd7e14', '#6610f2'];
+                let backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#fd7e14', '#6610f2', '#8B0000', '#FF8C00', '#9400D3', '#00BFFF'];
                 if (isSeverityChart) {
                     const order = ['Leve', 'Moderada', 'Grave'];
                     const sortedLabels = Object.keys(data).sort((a, b) => order.indexOf(a) - order.indexOf(b));
@@ -488,6 +487,15 @@
                 },
                 indexAxis: isHorizontal ? 'y' : 'x',
             };
+            
+            // Ajuste dinâmico de altura para gráficos de barra horizontais
+            if (isHorizontal && chartData.labels.length > 5) {
+                const baseHeight = 250;
+                const dynamicHeight = chartData.labels.length * 40;
+                document.getElementById(chartId).style.height = `${baseHeight + dynamicHeight}px`;
+            } else {
+                document.getElementById(chartId).style.height = '40vh';
+            }
 
             this.charts[chartId] = new Chart(ctx, {
                 type: type,
@@ -533,7 +541,6 @@
 
             const n = counts.length;
             if (n === 0) {
-                // Se não há dados, destrói o gráfico anterior e cria um novo vazio
                 if (this.charts['cChart']) {
                     this.charts['cChart'].destroy();
                 }
@@ -549,6 +556,10 @@
             const ucl = cBar + 3 * Math.sqrt(cBar);
             const lcl = Math.max(0, cBar - 3 * Math.sqrt(cBar));
             const pointColors = counts.map(c => (c > ucl || c < lcl) ? 'red' : 'rgb(75, 192, 192)');
+
+            if (this.charts['cChart']) {
+                this.charts['cChart'].destroy();
+            }
 
             this.charts['cChart'] = new Chart(ctx, {
                 type: 'line',
