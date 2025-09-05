@@ -87,8 +87,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-            /* Limita a altura do contêiner e adiciona rolagem */
-            max-height: 85vh; /* 85% da altura da tela */
+            max-height: 85vh;
             overflow-y: auto;
         }
         .stats-card {
@@ -149,6 +148,56 @@
             margin-top: 10px;
             width: 100%;
         }
+        /* Estilos específicos para a silhueta */
+        .silhouette-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .human-silhouette {
+            width: 100%;
+            height: auto;
+            max-width: 300px;
+        }
+        .body-part {
+            fill: #ccc;
+            transition: fill 0.3s ease;
+        }
+        .body-part-label {
+            fill: #000;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        .color-0 { background-color: #ccc; }
+        .color-1 { background-color: #a5d6a7; }
+        .color-2 { background-color: #81c784; }
+        .color-3 { background-color: #4caf50; }
+        .color-4 { background-color: #ffc107; }
+        .color-5 { background-color: #ff9800; }
+        .color-6 { background-color: #dc3545; }
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -230,7 +279,15 @@
             </div>
             <div class="form-group">
                 <label for="bodyPart">Parte do Corpo Afetada:</label>
-                <input type="text" id="bodyPart">
+                <select id="bodyPart" required>
+                    <option value="">Selecione a parte do corpo</option>
+                    <option value="Cabeca">Cabeça</option>
+                    <option value="Bracos">Braços</option>
+                    <option value="Tronco">Tronco</option>
+                    <option value="Maos">Mãos</option>
+                    <option value="Pernas">Pernas</option>
+                    <option value="Pes">Pés</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="manager">Gerência Responsável:</label>
@@ -319,9 +376,46 @@
                 <h3>Ocorrências por Localização</h3>
                 <canvas id="locationChart"></canvas>
             </div>
-            <div class="chart-container" id="bodyPartChartContainer">
+            <div class="silhouette-container">
                 <h3>Ocorrências por Parte do Corpo</h3>
-                <canvas id="bodyPartChart"></canvas>
+                <svg id="humanSilhouette" class="human-silhouette" viewBox="0 0 160 300">
+                    <g id="Cabeca">
+                        <circle cx="80" cy="30" r="25" class="body-part" />
+                        <text x="80" y="30" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Cabeca"></text>
+                    </g>
+                    <g id="Tronco">
+                        <rect x="50" y="55" width="60" height="90" rx="10" ry="10" class="body-part" />
+                        <text x="80" y="100" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Tronco"></text>
+                    </g>
+                    <g id="Bracos">
+                        <path d="M48,65 L20,120 L30,125 L58,70 Z" class="body-part" />
+                        <path d="M112,65 L140,120 L130,125 L102,70 Z" class="body-part" />
+                        <text x="80" y="125" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Bracos"></text>
+                    </g>
+                    <g id="Maos">
+                        <circle cx="20" cy="125" r="8" class="body-part" />
+                        <circle cx="140" cy="125" r="8" class="body-part" />
+                        <text x="80" y="150" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Maos"></text>
+                    </g>
+                    <g id="Pernas">
+                        <path d="M60,145 L60,250 L65,250 L65,145 Z" class="body-part" />
+                        <path d="M100,145 L100,250 L95,250 L95,145 Z" class="body-part" />
+                        <text x="80" y="200" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Pernas"></text>
+                    </g>
+                    <g id="Pes">
+                        <rect x="55" y="250" width="10" height="15" class="body-part" />
+                        <rect x="95" y="250" width="10" height="15" class="body-part" />
+                        <text x="80" y="265" dominant-baseline="middle" text-anchor="middle" class="body-part-label" id="label-Pes"></text>
+                    </g>
+                </svg>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color color-1"></div>1 a 5</div>
+                    <div class="legend-item"><div class="legend-color color-2"></div>6 a 10</div>
+                    <div class="legend-item"><div class="legend-color color-3"></div>11 a 20</div>
+                    <div class="legend-item"><div class="legend-color color-4"></div>21 a 30</div>
+                    <div class="legend-item"><div class="legend-color color-5"></div>31 a 50</div>
+                    <div class="legend-item"><div class="legend-color color-6"></div>> 50</div>
+                </div>
             </div>
         </div>
     </section>
@@ -373,7 +467,7 @@
                 const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
                 const severities = ['Leve', 'Moderada', 'Grave'];
                 const types = ['Acidente', 'Incidente'];
-                const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
+                const bodyParts = ['Cabeca', 'Tronco', 'Bracos', 'Maos', 'Pernas', 'Pes'];
                 const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
 
                 const occurrences = [];
@@ -409,6 +503,7 @@
         updateDashboards(filteredData = this.occurrences) {
             this.updateStats(filteredData);
             this.updateCharts(filteredData);
+            this.renderBodySilhouette(filteredData);
         }
 
         updateStats(data) {
@@ -428,10 +523,9 @@
             this.createChart('severityChart', this.getDistributionData(data, 'severity'), 'pie', 'Ocorrências por Gravidade');
             this.createChart('categoryChart', this.getDistributionData(data, 'category'), 'bar', 'Ocorrências por Categoria');
             this.createChart('locationChart', this.getDistributionData(data, 'location'), 'bar', 'Ocorrências por Localização', false, true);
-            this.createChart('bodyPartChart', this.getDistributionData(data, 'bodyPart'), 'doughnut', 'Ocorrências por Parte do Corpo');
             this.updateCChart(data);
         }
-
+        
         createChart(chartId, data, type, title, isMonthly = false, isHorizontal = false) {
             const ctx = document.getElementById(chartId).getContext('2d');
             const isSeverityChart = chartId === 'severityChart';
@@ -491,7 +585,6 @@
                 indexAxis: isHorizontal ? 'y' : 'x',
             };
             
-            // Ajusta a altura do canvas para que o gráfico caiba no contêiner
             document.getElementById(chartId).style.height = `${options.maintainAspectRatio === false ? 'auto' : '40vh'}`;
 
             this.charts[chartId] = new Chart(ctx, {
@@ -613,6 +706,41 @@
                             beginAtZero: true
                         }
                     }
+                }
+            });
+        }
+
+        renderBodySilhouette(data) {
+            const bodyPartCounts = this.getDistributionData(data, 'bodyPart');
+            const bodyParts = ['Cabeca', 'Tronco', 'Bracos', 'Maos', 'Pernas', 'Pes'];
+
+            // Função para determinar a classe de cor com base na contagem
+            const getColorClass = (count) => {
+                if (count === 0) return 'color-0';
+                if (count >= 1 && count <= 5) return 'color-1';
+                if (count >= 6 && count <= 10) return 'color-2';
+                if (count >= 11 && count <= 20) return 'color-3';
+                if (count >= 21 && count <= 30) return 'color-4';
+                if (count >= 31 && count <= 50) return 'color-5';
+                if (count > 50) return 'color-6';
+            };
+
+            // Resetar todas as partes para a cor padrão
+            document.querySelectorAll('.body-part').forEach(el => el.style.fill = '#ccc');
+            document.querySelectorAll('.body-part-label').forEach(el => el.textContent = '');
+
+            // Atualizar as partes com base nos dados
+            bodyParts.forEach(part => {
+                const count = bodyPartCounts[part] || 0;
+                const silhouettePart = document.getElementById(part);
+                const label = document.getElementById(`label-${part}`);
+
+                if (count > 0) {
+                    // Pega a cor correspondente à contagem
+                    const colorClass = getColorClass(count);
+                    const color = document.querySelector(`.legend-color.${colorClass}`).style.backgroundColor;
+                    silhouettePart.style.fill = color;
+                    label.textContent = count;
                 }
             });
         }
