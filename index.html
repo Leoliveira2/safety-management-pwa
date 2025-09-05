@@ -331,8 +331,8 @@
             this.localStorageKey = 'sstOccurrences';
             this.occurrences = this.loadOccurrences();
             this.charts = {};
-            this.renderCharts();
             this.setupListeners();
+            this.updateDashboards();
             this.updateFilters();
         }
 
@@ -360,50 +360,47 @@
                 this.saveOccurrences();
                 this.updateDashboards();
                 this.updateFilters();
+                this.updateId();
             }
         }
 
         generateRandomOccurrences() {
             if (confirm('Isso irá apagar todos os dados atuais e criar 300 novos registros. Deseja continuar?')) {
-                this.occurrences = this.generateRandomData();
+                const locations = ['Área de Produção', 'Almoxarifado', 'Escritório', 'Manutenção', 'Expedição', 'Outro'];
+                const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
+                const severities = ['Leve', 'Moderada', 'Grave'];
+                const types = ['Acidente', 'Incidente'];
+                const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
+                const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
+
+                const occurrences = [];
+                const today = dayjs();
+                for (let i = 1; i <= 300; i++) {
+                    const randomDays = Math.floor(Math.random() * 730);
+                    const randomDate = today.subtract(randomDays, 'day').format('YYYY-MM-DD');
+                    const randomTime = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
+
+                    occurrences.push({
+                        id: i,
+                        date: randomDate,
+                        time: randomTime,
+                        location: locations[Math.floor(Math.random() * locations.length)],
+                        category: categories[Math.floor(Math.random() * categories.length)],
+                        severity: severities[Math.floor(Math.random() * severities.length)],
+                        type: types[Math.floor(Math.random() * types.length)],
+                        highPotential: Math.random() < 0.2,
+                        bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
+                        description: "Descrição gerada aleatoriamente para simulação.",
+                        manager: managers[Math.floor(Math.random() * managers.length)]
+                    });
+                }
+                this.occurrences = occurrences;
                 this.saveOccurrences();
                 this.updateDashboards();
                 this.updateFilters();
                 this.updateId();
                 alert('300 novas ocorrências foram geradas com sucesso!');
             }
-        }
-
-        generateRandomData() {
-            const locations = ['Área de Produção', 'Almoxarifado', 'Escritório', 'Manutenção', 'Expedição', 'Outro'];
-            const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
-            const severities = ['Leve', 'Moderada', 'Grave'];
-            const types = ['Acidente', 'Incidente'];
-            const bodyParts = ['Mão', 'Pé', 'Braço', 'Perna', 'Cabeça', 'Tronco', 'Outro'];
-            const managers = ['Gerente A', 'Gerente B', 'Gerente C'];
-
-            const occurrences = [];
-            const today = dayjs();
-            for (let i = 1; i <= 300; i++) {
-                const randomDays = Math.floor(Math.random() * 730);
-                const randomDate = today.subtract(randomDays, 'day').format('YYYY-MM-DD');
-                const randomTime = `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`;
-
-                occurrences.push({
-                    id: i,
-                    date: randomDate,
-                    time: randomTime,
-                    location: locations[Math.floor(Math.random() * locations.length)],
-                    category: categories[Math.floor(Math.random() * categories.length)],
-                    severity: severities[Math.floor(Math.random() * severities.length)],
-                    type: types[Math.floor(Math.random() * types.length)],
-                    highPotential: Math.random() < 0.2,
-                    bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
-                    description: "Descrição gerada aleatoriamente para simulação.",
-                    manager: managers[Math.floor(Math.random() * managers.length)]
-                });
-            }
-            return occurrences;
         }
 
         updateDashboards(filteredData = this.occurrences) {
@@ -420,16 +417,20 @@
         }
 
         updateCharts(data) {
-            this.createOrUpdateChart('monthlyChart', this.getMonthlyData(data), 'line', 'Ocorrências por Mês', true);
-            this.createOrUpdateChart('typeChart', this.getDistributionData(data, 'type'), 'doughnut', 'Ocorrências por Tipo');
-            this.createOrUpdateChart('severityChart', this.getDistributionData(data, 'severity'), 'pie', 'Ocorrências por Gravidade');
-            this.createOrUpdateChart('categoryChart', this.getDistributionData(data, 'category'), 'bar', 'Ocorrências por Categoria');
-            this.createOrUpdateChart('locationChart', this.getDistributionData(data, 'location'), 'bar', 'Ocorrências por Localização', false, true);
-            this.createOrUpdateChart('bodyPartChart', this.getDistributionData(data, 'bodyPart'), 'doughnut', 'Ocorrências por Parte do Corpo');
+            // Destroy all charts before creating new ones to avoid conflicts
+            Object.values(this.charts).forEach(chart => chart.destroy());
+            this.charts = {};
+
+            this.createChart('monthlyChart', this.getMonthlyData(data), 'line', 'Ocorrências por Mês', true);
+            this.createChart('typeChart', this.getDistributionData(data, 'type'), 'doughnut', 'Ocorrências por Tipo');
+            this.createChart('severityChart', this.getDistributionData(data, 'severity'), 'pie', 'Ocorrências por Gravidade');
+            this.createChart('categoryChart', this.getDistributionData(data, 'category'), 'bar', 'Ocorrências por Categoria');
+            this.createChart('locationChart', this.getDistributionData(data, 'location'), 'bar', 'Ocorrências por Localização', false, true);
+            this.createChart('bodyPartChart', this.getDistributionData(data, 'bodyPart'), 'doughnut', 'Ocorrências por Parte do Corpo');
             this.updateCChart(data);
         }
 
-        createOrUpdateChart(chartId, data, type, title, isMonthly = false, isHorizontal = false) {
+        createChart(chartId, data, type, title, isMonthly = false, isHorizontal = false) {
             const ctx = document.getElementById(chartId).getContext('2d');
             const isSeverityChart = chartId === 'severityChart';
 
@@ -488,16 +489,11 @@
                 indexAxis: isHorizontal ? 'y' : 'x',
             };
 
-            if (this.charts[chartId]) {
-                this.charts[chartId].data = chartData;
-                this.charts[chartId].update();
-            } else {
-                this.charts[chartId] = new Chart(ctx, {
-                    type: type,
-                    data: chartData,
-                    options: options
-                });
-            }
+            this.charts[chartId] = new Chart(ctx, {
+                type: type,
+                data: chartData,
+                options: options
+            });
         }
 
         getMonthlyData(data) {
@@ -524,67 +520,7 @@
         }
 
         updateCChart(data) {
-            if (!this.charts['cChart']) {
-                const ctx = document.getElementById('cChart').getContext('2d');
-                this.charts['cChart'] = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [
-                            {
-                                label: 'Ocorrências',
-                                data: [],
-                                borderColor: 'rgb(75, 192, 192)',
-                                backgroundColor: 'rgb(75, 192, 192)',
-                                tension: 0.1,
-                                fill: false,
-                                pointBackgroundColor: [],
-                                pointBorderColor: []
-                            },
-                            {
-                                label: 'LSC (Limite Superior de Controle)',
-                                data: [],
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 1,
-                                borderDash: [5, 5],
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'Linha Central (Média)',
-                                data: [],
-                                borderColor: 'rgb(54, 162, 235)',
-                                borderWidth: 1,
-                                borderDash: [5, 5],
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'LIC (Limite Inferior de Controle)',
-                                data: [],
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 1,
-                                borderDash: [5, 5],
-                                pointRadius: 0
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Gráfico de Controle C-Chart'
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-
+            const ctx = document.getElementById('cChart').getContext('2d');
             const monthlyCounts = {};
             data.forEach(item => {
                 const month = dayjs(item.date).format('YYYY-MM');
@@ -597,26 +533,80 @@
 
             const n = counts.length;
             if (n === 0) {
-                this.charts['cChart'].data.labels = [];
-                this.charts['cChart'].data.datasets.forEach(ds => ds.data = []);
-                this.charts['cChart'].update();
+                // Se não há dados, destrói o gráfico anterior e cria um novo vazio
+                if (this.charts['cChart']) {
+                    this.charts['cChart'].destroy();
+                }
+                this.charts['cChart'] = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
                 return;
             }
 
             const cBar = counts.reduce((a, b) => a + b, 0) / n;
             const ucl = cBar + 3 * Math.sqrt(cBar);
             const lcl = Math.max(0, cBar - 3 * Math.sqrt(cBar));
-
             const pointColors = counts.map(c => (c > ucl || c < lcl) ? 'red' : 'rgb(75, 192, 192)');
 
-            this.charts['cChart'].data.labels = labels;
-            this.charts['cChart'].data.datasets[0].data = counts;
-            this.charts['cChart'].data.datasets[0].pointBackgroundColor = pointColors;
-            this.charts['cChart'].data.datasets[0].pointBorderColor = pointColors;
-            this.charts['cChart'].data.datasets[1].data = new Array(n).fill(ucl);
-            this.charts['cChart'].data.datasets[2].data = new Array(n).fill(cBar);
-            this.charts['cChart'].data.datasets[3].data = new Array(n).fill(lcl);
-            this.charts['cChart'].update();
+            this.charts['cChart'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Ocorrências',
+                            data: counts,
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            fill: false,
+                            pointBackgroundColor: pointColors,
+                            pointBorderColor: pointColors
+                        },
+                        {
+                            label: 'LSC (Limite Superior de Controle)',
+                            data: new Array(n).fill(ucl),
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 1,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Linha Central (Média)',
+                            data: new Array(n).fill(cBar),
+                            borderColor: 'rgb(54, 162, 235)',
+                            borderWidth: 1,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'LIC (Limite Inferior de Controle)',
+                            data: new Array(n).fill(lcl),
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 1,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Gráfico de Controle C-Chart'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         }
 
         updateFilters() {
