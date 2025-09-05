@@ -511,12 +511,12 @@
                 });
             }
 
-            // Criar gráfico de ocorrências por mês
+            // Criar gráfico de ocorrências por mês (alterado para barras)
             createOccurrencesByMonthChart() {
                 const ctx = document.getElementById('occurrencesByMonthChart').getContext('2d');
                 this.monthChart = new Chart(ctx, {
-                    type: 'line',
-                    data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], tension: 0.1 }] },
+                    type: 'bar', // Alterado de 'line' para 'bar'
+                    data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], backgroundColor: 'rgba(75, 192, 192, 0.6)' }] },
                     options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Mês' } } }
                 });
             }
@@ -543,16 +543,16 @@
                 const ctx = document.getElementById('occurrencesByTypeChart').getContext('2d');
                 this.typeChart = new Chart(ctx, {
                     type: 'doughnut',
-                    data: { labels: [], datasets: [{ data: [] }] },
+                    data: { labels: ['Acidente', 'Incidente'], datasets: [{ data: [], backgroundColor: ['#dc3545', '#007bff'] }] },
                     options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Tipo' } } }
                 });
             }
 
             updateOccurrencesByTypeChart(data) {
-                const typeCounts = data.reduce((acc, o) => {
-                    acc[o.type] = (acc[o.type] || 0) + 1;
-                    return acc;
-                }, {});
+                const typeCounts = {
+                    'Acidente': data.filter(o => o.type === 'Acidente').length,
+                    'Incidente': data.filter(o => o.type === 'Incidente').length,
+                };
                 const labels = Object.keys(typeCounts);
                 const chartData = Object.values(typeCounts);
                 this.typeChart.data.labels = labels;
@@ -565,7 +565,7 @@
                 const ctx = document.getElementById('occurrencesByCategoryChart').getContext('2d');
                 this.categoryChart = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Categorias', data: [] }] },
+                    data: { labels: [], datasets: [{ label: 'Categorias', data: [], backgroundColor: [] }] },
                     options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Categoria' } } }
                 });
             }
@@ -577,8 +577,18 @@
                 }, {});
                 const labels = Object.keys(categoryCounts);
                 const chartData = Object.values(categoryCounts);
+                const backgroundColors = labels.map(label => {
+                    if (label === 'Grave' || label === 'Alto Potencial') {
+                        return '#dc3545'; // Vermelho para grave/alto potencial
+                    }
+                    if (label === 'Moderada') {
+                        return '#ffc107'; // Amarelo para moderada
+                    }
+                    return '#28a745'; // Verde para o resto
+                });
                 this.categoryChart.data.labels = labels;
                 this.categoryChart.data.datasets[0].data = chartData;
+                this.categoryChart.data.datasets[0].backgroundColor = backgroundColors;
                 this.categoryChart.update();
             }
 
@@ -587,16 +597,17 @@
                 const ctx = document.getElementById('occurrencesBySeverityChart').getContext('2d');
                 this.severityChart = new Chart(ctx, {
                     type: 'pie',
-                    data: { labels: [], datasets: [{ data: [] }] },
+                    data: { labels: ['Leve', 'Moderada', 'Grave'], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545'] }] },
                     options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Gravidade' } } }
                 });
             }
 
             updateOccurrencesBySeverityChart(data) {
-                const severityCounts = data.reduce((acc, o) => {
-                    acc[o.severity] = (acc[o.severity] || 0) + 1;
-                    return acc;
-                }, {});
+                const severityCounts = {
+                    'Leve': data.filter(o => o.severity === 'Leve').length,
+                    'Moderada': data.filter(o => o.severity === 'Moderada').length,
+                    'Grave': data.filter(o => o.severity === 'Grave').length,
+                };
                 const labels = Object.keys(severityCounts);
                 const chartData = Object.values(severityCounts);
                 this.severityChart.data.labels = labels;
@@ -609,7 +620,7 @@
                 const ctx = document.getElementById('occurrencesByLocationChart').getContext('2d');
                 this.locationChart = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Localizações', data: [] }] },
+                    data: { labels: [], datasets: [{ label: 'Localizações', data: [], backgroundColor: 'rgba(0, 123, 255, 0.6)' }] },
                     options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Localização' } } }
                 });
             }
@@ -631,7 +642,7 @@
                 const ctx = document.getElementById('occurrencesByBodyPartChart').getContext('2d');
                 this.bodyPartChart = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Partes do Corpo', data: [] }] },
+                    data: { labels: [], datasets: [{ label: 'Partes do Corpo', data: [], backgroundColor: [] }] },
                     options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Parte do Corpo' } } }
                 });
             }
@@ -643,8 +654,24 @@
                 }, {});
                 const labels = Object.keys(bodyPartCounts);
                 const chartData = Object.values(bodyPartCounts);
+                
+                const bodyPartColors = {
+                    'Mão': '#ff6384',
+                    'Cabeça': '#4bc0c0',
+                    'Joelho': '#ff9f40',
+                    'Braço': '#36a2eb',
+                    'Perna': '#9966ff',
+                    'Tronco': '#c9cbcf',
+                    'Olho': '#ffcd56',
+                    'Pé': '#4bc0c0',
+                    'Outra': '#7f8c8d'
+                };
+
+                const backgroundColors = labels.map(label => bodyPartColors[label] || '#7f8c8d');
+
                 this.bodyPartChart.data.labels = labels;
                 this.bodyPartChart.data.datasets[0].data = chartData;
+                this.bodyPartChart.data.datasets[0].backgroundColor = backgroundColors;
                 this.bodyPartChart.update();
             }
 
