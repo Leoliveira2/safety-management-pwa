@@ -581,17 +581,25 @@
                 const accidents = data.filter(o => o.type === 'Acidente').length;
                 const incidents = data.filter(o => o.type === 'Incidente').length;
                 const highPotential = data.filter(o => o.highPotential).length;
+                const grave = data.filter(o => o.severity === 'Grave').length;
 
                 const stats = [
                     { label: 'Total de Ocorrências', value: total },
                     { label: 'Acidentes', value: accidents },
                     { label: 'Incidentes', value: incidents },
-                    { label: 'Alto Potencial', value: highPotential }
+                    { label: 'Alto Potencial', value: highPotential, color: '#ffc107' }, // Amarelo
+                    { label: 'Ocorrências Graves', value: grave, color: '#dc3545' } // Vermelho
                 ];
 
                 stats.forEach(stat => {
                     const card = document.createElement('div');
                     card.className = 'stat-card';
+                    if (stat.color) {
+                        card.style.backgroundColor = stat.color;
+                        card.style.color = '#fff';
+                        card.querySelector('.stat-number').style.color = '#fff';
+                        card.querySelector('.stat-label').style.color = '#fff';
+                    }
                     card.innerHTML = `<div class="stat-number">${stat.value}</div><div class="stat-label">${stat.label}</div>`;
                     summaryContainer.appendChild(card);
                 });
