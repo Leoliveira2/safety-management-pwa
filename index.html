@@ -66,7 +66,7 @@
         }
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 20px;
         }
         .chart-container {
@@ -291,6 +291,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
     <script>
         // Classe para gerenciar ocorrências
@@ -511,40 +512,99 @@
                 });
             }
 
-            // Criar gráfico de ocorrências por mês (alterado para barras)
+            // Criar gráfico de ocorrências por mês (alterado para barras empilhadas)
             createOccurrencesByMonthChart() {
                 const ctx = document.getElementById('occurrencesByMonthChart').getContext('2d');
                 this.monthChart = new Chart(ctx, {
-                    type: 'bar', // Alterado de 'line' para 'bar'
-                    data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], backgroundColor: 'rgba(75, 192, 192, 0.6)' }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Mês' } } }
+                    type: 'bar',
+                    data: { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        plugins: { 
+                            title: { display: true, text: 'Ocorrências por Mês' }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true }
+                        }
+                    }
                 });
             }
 
             updateOccurrencesByMonthChart(data) {
-                const monthlyData = {};
-                for (let i = 1; i <= 12; i++) {
-                    monthlyData[i] = 0;
-                }
-                data.forEach(o => {
-                    if (o.month) {
-                        monthlyData[o.month]++;
+                const monthlyData = data.reduce((acc, o) => {
+                    const monthYear = `${o.month}-${o.year}`;
+                    acc[monthYear] = acc[monthYear] || { lowSeverity: 0, grave: 0, highPotential: 0 };
+                    
+                    if (o.highPotential) {
+                        acc[monthYear].highPotential++;
+                    } else if (o.severity === 'Grave') {
+                        acc[monthYear].grave++;
+                    } else {
+                        acc[monthYear].lowSeverity++;
                     }
+                    return acc;
+                }, {});
+
+                const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+                    const [monthA, yearA] = a.split('-').map(Number);
+                    const [monthB, yearB] = b.split('-').map(Number);
+                    if (yearA !== yearB) return yearA - yearB;
+                    return monthA - monthB;
                 });
-                const labels = Object.keys(monthlyData).map(m => dayjs().month(m - 1).format('MMM'));
-                const chartData = Object.values(monthlyData);
+
+                const labels = sortedMonths.map(m => {
+                    const [month, year] = m.split('-');
+                    return dayjs().month(Number(month) - 1).format('MMM') + (year !== dayjs().year() ? ` ${year}` : '');
+                });
+
+                const lowSeverityData = sortedMonths.map(m => monthlyData[m].lowSeverity);
+                const graveData = sortedMonths.map(m => monthlyData[m].grave);
+                const highPotentialData = sortedMonths.map(m => monthlyData[m].highPotential);
+
                 this.monthChart.data.labels = labels;
-                this.monthChart.data.datasets[0].data = chartData;
+                this.monthChart.data.datasets = [
+                    {
+                        label: 'Baixa Gravidade',
+                        data: lowSeverityData,
+                        backgroundColor: '#28a745'
+                    },
+                    {
+                        label: 'Grave',
+                        data: graveData,
+                        backgroundColor: '#ffc107'
+                    },
+                    {
+                        label: 'Alto Potencial',
+                        data: highPotentialData,
+                        backgroundColor: '#dc3545'
+                    }
+                ];
                 this.monthChart.update();
             }
 
-            // Criar gráfico de ocorrências por tipo
+            // Criar gráfico de ocorrências por tipo (com valores nos rótulos)
             createOccurrencesByTypeChart() {
                 const ctx = document.getElementById('occurrencesByTypeChart').getContext('2d');
                 this.typeChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: { labels: ['Acidente', 'Incidente'], datasets: [{ data: [], backgroundColor: ['#dc3545', '#007bff'] }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Tipo' } } }
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: { display: true, text: 'Ocorrências por Tipo' },
+                            datalabels: {
+                                color: '#fff',
+                                formatter: (value, context) => {
+                                    const total = context.chart.data.datasets[0].data.reduce((sum, current) => sum + current, 0);
+                                    if (total === 0) return '';
+                                    const percentage = (value / total * 100).toFixed(1) + '%';
+                                    return percentage;
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
                 });
             }
 
@@ -578,13 +638,14 @@
                 const labels = Object.keys(categoryCounts);
                 const chartData = Object.values(categoryCounts);
                 const backgroundColors = labels.map(label => {
-                    if (label === 'Grave' || label === 'Alto Potencial') {
-                        return '#dc3545'; // Vermelho para grave/alto potencial
+                    const category = data.find(o => o.category === label);
+                    if (category && category.highPotential) {
+                        return '#dc3545';
                     }
-                    if (label === 'Moderada') {
-                        return '#ffc107'; // Amarelo para moderada
+                    if (category && category.severity === 'Grave') {
+                        return '#ffc107';
                     }
-                    return '#28a745'; // Verde para o resto
+                    return '#28a745';
                 });
                 this.categoryChart.data.labels = labels;
                 this.categoryChart.data.datasets[0].data = chartData;
