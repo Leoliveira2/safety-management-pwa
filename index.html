@@ -127,36 +127,6 @@
                 width: 100%;
             }
         }
-        
-        .human-body-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        .human-body-svg {
-            width: 70%;
-            height: auto;
-        }
-        .body-part-Mao, .body-part-Perna, .body-part-Braco, .body-part-Olho, .body-part-Cabeca, .body-part-Joelho, .body-part-Tronco, .body-part-Pe {
-            fill: #c9cbcf;
-            stroke: #333;
-            stroke-width: 1;
-            transition: fill 0.3s ease;
-        }
-        .body-part-Mao:hover, .body-part-Perna:hover, .body-part-Braco:hover, .body-part-Olho:hover, .body-part-Cabeca:hover, .body-part-Joelho:hover, .body-part-Tronco:hover, .body-part-Pe:hover {
-            opacity: 0.8;
-            cursor: pointer;
-        }
-        .body-part-text {
-            fill: #333;
-            font-size: 12px;
-            font-weight: bold;
-            text-anchor: middle;
-            pointer-events: none; /* Make text non-clickable */
-        }
     </style>
 </head>
 <body>
@@ -298,7 +268,7 @@
                 <button id="clearFilters" style="margin-top: 10px; margin-left: 10px; background-color: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Limpar Filtros</button>
             </div>
             <div class="dashboard-grid">
-                <div class="chart-container">
+                <div class="chart-container full-width-chart">
                     <canvas id="occurrencesByMonthChart"></canvas>
                 </div>
                 <div class="chart-container">
@@ -314,42 +284,7 @@
                     <canvas id="occurrencesByLocationChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 style="text-align: center;">Ocorrências por Parte do Corpo</h3>
-                    <div class="human-body-container">
-                        <svg class="human-body-svg" viewBox="0 0 100 200">
-                            <path id="body-part-Cabeca" d="M 45 10 A 5 5 0 0 1 55 10 L 55 20 L 45 20 Z" />
-                            <path id="body-part-Tronco" d="M 40 20 L 60 20 L 60 80 A 20 20 0 0 1 50 100 A 20 20 0 0 1 40 80 Z" />
-                            <path id="body-part-Braco-Esq" d="M 40 30 L 30 40 A 5 5 0 0 0 25 50 L 25 70 A 5 5 0 0 0 30 80 L 40 70 Z" />
-                            <path id="body-part-Braco-Dir" d="M 60 30 L 70 40 A 5 5 0 0 1 75 50 L 75 70 A 5 5 0 0 1 70 80 L 60 70 Z" />
-                            <path id="body-part-Mao-Esq" d="M 25 70 A 5 5 0 0 0 20 75 L 20 80 A 5 5 0 0 0 25 85 Z" />
-                            <path id="body-part-Mao-Dir" d="M 75 70 A 5 5 0 0 1 80 75 L 80 80 A 5 5 0 0 1 75 85 Z" />
-                            <path id="body-part-Perna-Esq" d="M 45 100 A 5 5 0 0 0 40 105 L 35 150 L 35 180 A 5 5 0 0 0 40 185 L 45 185 A 5 5 0 0 0 50 180 Z" />
-                            <path id="body-part-Perna-Dir" d="M 55 100 A 5 5 0 0 1 60 105 L 65 150 L 65 180 A 5 5 0 0 1 60 185 L 55 185 A 5 5 0 0 1 50 180 Z" />
-                            <circle id="body-part-Joelho-Esq" cx="40" cy="140" r="3" />
-                            <circle id="body-part-Joelho-Dir" cx="60" cy="140" r="3" />
-                            <circle id="body-part-Olho-Esq" cx="48" cy="15" r="1.5" />
-                            <circle id="body-part-Olho-Dir" cx="52" cy="15" r="1.5" />
-                            <path id="body-part-Pe-Esq" d="M 40 185 L 35 190 A 5 5 0 0 0 40 195 L 45 195 A 5 5 0 0 0 50 190 Z" />
-                            <path id="body-part-Pe-Dir" d="M 60 185 L 65 190 A 5 5 0 0 1 60 195 L 55 195 A 5 5 0 0 1 50 190 Z" />
-                            <g id="body-part-counts-group">
-                                <text class="body-part-text" x="50" y="25" id="text-Cabeca">0</text>
-                                <text class="body-part-text" x="50" y="60" id="text-Tronco">0</text>
-                                <text class="body-part-text" x="25" y="55" id="text-Braco">0</text>
-                                <text class="body-part-text" x="75" y="55" id="text-Braco">0</text>
-                                <text class="body-part-text" x="25" y="80" id="text-Mao">0</text>
-                                <text class="body-part-text" x="75" y="80" id="text-Mao">0</text>
-                                <text class="body-part-text" x="40" y="145" id="text-Joelho">0</text>
-                                <text class="body-part-text" x="60" y="145" id="text-Joelho">0</text>
-                                <text class="body-part-text" x="40" y="150" id="text-Perna">0</text>
-                                <text class="body-part-text" x="60" y="150" id="text-Perna">0</text>
-                                <text class="body-part-text" x="25" y="15" id="text-Olho">0</text>
-                                <text class="body-part-text" x="75" y="15" id="text-Olho">0</text>
-                                <text class="body-part-text" x="40" y="190" id="text-Pe">0</text>
-                                <text class="body-part-text" x="60" y="190" id="text-Pe">0</text>
-                                <text class="body-part-text" x="50" y="110" id="text-Outra">0</text>
-                            </g>
-                        </svg>
-                    </div>
+                    <canvas id="occurrencesByBodyPartChart"></canvas>
                 </div>
                 <div class="chart-container" style="grid-column: 1 / -1;">
                     <canvas id="cControlChart"></canvas>
@@ -445,7 +380,7 @@
                 const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
                 const severities = ['Leve', 'Moderada', 'Grave'];
                 const types = ['Acidente', 'Incidente'];
-                const bodyParts = ['Mão', 'Cabeça', 'Joelho', 'Braço', 'Perna', 'Tronco', 'Olho', 'Pé', 'Outra'];
+                const bodyParts = ['Mão', 'Cabeça', 'Joelho', 'Braço', 'Perna', 'Tronco', 'Olho', 'Pé'];
                 const locations = ['Área de Produção', 'Escritório', 'Almoxarifado', 'Laboratório', 'Oficina', 'Pátio'];
                 const managements = ['Produção', 'Manutenção', 'RH', 'Qualidade', 'Logística'];
 
@@ -485,6 +420,8 @@
                 this.createOccurrencesByCategoryChart();
                 this.createOccurrencesBySeverityChart();
                 this.createOccurrencesByLocationChart();
+                this.createOccurrencesByBodyPartChart();
+                this.createCControlChart();
                 this.initializeFilters();
                 this.updateDashboards();
             }
@@ -550,6 +487,7 @@
                 this.updateOccurrencesBySeverityChart(filteredOccurrences);
                 this.updateOccurrencesByLocationChart(filteredOccurrences);
                 this.updateOccurrencesByBodyPartChart(filteredOccurrences);
+                this.updateCControlChart(filteredOccurrences);
             }
 
             // Atualizar resumo estatístico
@@ -577,48 +515,107 @@
                 });
             }
 
-            // Criar gráfico de ocorrências por mês
+            // Criar gráfico de ocorrências por mês (alterado para barras empilhadas)
             createOccurrencesByMonthChart() {
                 const ctx = document.getElementById('occurrencesByMonthChart').getContext('2d');
                 this.monthChart = new Chart(ctx, {
-                    type: 'line',
-                    data: { labels: [], datasets: [{ label: 'Ocorrências por Mês', data: [], tension: 0.1 }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Mês' } } }
+                    type: 'bar',
+                    data: { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        plugins: { 
+                            title: { display: true, text: 'Ocorrências por Mês' }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true }
+                        }
+                    }
                 });
             }
 
             updateOccurrencesByMonthChart(data) {
-                const monthlyData = {};
-                for (let i = 1; i <= 12; i++) {
-                    monthlyData[i] = 0;
-                }
-                data.forEach(o => {
-                    if (o.month) {
-                        monthlyData[o.month]++;
+                const monthlyData = data.reduce((acc, o) => {
+                    const monthYear = `${o.month}-${o.year}`;
+                    acc[monthYear] = acc[monthYear] || { lowSeverity: 0, grave: 0, highPotential: 0 };
+                    
+                    if (o.highPotential) {
+                        acc[monthYear].highPotential++;
+                    } else if (o.severity === 'Grave') {
+                        acc[monthYear].grave++;
+                    } else {
+                        acc[monthYear].lowSeverity++;
                     }
+                    return acc;
+                }, {});
+
+                const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+                    const [monthA, yearA] = a.split('-').map(Number);
+                    const [monthB, yearB] = b.split('-').map(Number);
+                    if (yearA !== yearB) return yearA - yearB;
+                    return monthA - monthB;
                 });
-                const labels = Object.keys(monthlyData).map(m => dayjs().month(m - 1).format('MMM'));
-                const chartData = Object.values(monthlyData);
+
+                const labels = sortedMonths.map(m => {
+                    const [month, year] = m.split('-');
+                    return dayjs().month(Number(month) - 1).format('MMM') + (year !== dayjs().year() ? ` ${year}` : '');
+                });
+
+                const lowSeverityData = sortedMonths.map(m => monthlyData[m].lowSeverity);
+                const graveData = sortedMonths.map(m => monthlyData[m].grave);
+                const highPotentialData = sortedMonths.map(m => monthlyData[m].highPotential);
+
                 this.monthChart.data.labels = labels;
-                this.monthChart.data.datasets[0].data = chartData;
+                this.monthChart.data.datasets = [
+                    {
+                        label: 'Baixa Gravidade',
+                        data: lowSeverityData,
+                        backgroundColor: '#28a745'
+                    },
+                    {
+                        label: 'Grave',
+                        data: graveData,
+                        backgroundColor: '#ffc107'
+                    },
+                    {
+                        label: 'Alto Potencial',
+                        data: highPotentialData,
+                        backgroundColor: '#dc3545'
+                    }
+                ];
                 this.monthChart.update();
             }
 
-            // Criar gráfico de ocorrências por tipo
+            // Criar gráfico de ocorrências por tipo (com valores nos rótulos)
             createOccurrencesByTypeChart() {
                 const ctx = document.getElementById('occurrencesByTypeChart').getContext('2d');
                 this.typeChart = new Chart(ctx, {
                     type: 'doughnut',
-                    data: { labels: [], datasets: [{ data: [] }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Tipo' } } }
+                    data: { labels: ['Acidente', 'Incidente'], datasets: [{ data: [], backgroundColor: ['#dc3545', '#007bff'] }] },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: { display: true, text: 'Ocorrências por Tipo' },
+                            datalabels: {
+                                color: '#fff',
+                                formatter: (value, context) => {
+                                    const total = context.chart.data.datasets[0].data.reduce((sum, current) => sum + current, 0);
+                                    if (total === 0) return '';
+                                    const percentage = (value / total * 100).toFixed(1) + '%';
+                                    return `${value} (${percentage})`;
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
                 });
             }
 
             updateOccurrencesByTypeChart(data) {
-                const typeCounts = data.reduce((acc, o) => {
-                    acc[o.type] = (acc[o.type] || 0) + 1;
-                    return acc;
-                }, {});
+                const typeCounts = {
+                    'Acidente': data.filter(o => o.type === 'Acidente').length,
+                    'Incidente': data.filter(o => o.type === 'Incidente').length,
+                };
                 const labels = Object.keys(typeCounts);
                 const chartData = Object.values(typeCounts);
                 this.typeChart.data.labels = labels;
@@ -631,7 +628,7 @@
                 const ctx = document.getElementById('occurrencesByCategoryChart').getContext('2d');
                 this.categoryChart = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Categorias', data: [] }] },
+                    data: { labels: [], datasets: [{ label: 'Categorias', data: [], backgroundColor: [] }] },
                     options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Categoria' } } }
                 });
             }
@@ -643,8 +640,22 @@
                 }, {});
                 const labels = Object.keys(categoryCounts);
                 const chartData = Object.values(categoryCounts);
+                const backgroundColors = labels.map(label => {
+                    // A cor vermelha significa 'Alto Potencial'
+                    // A cor amarela significa 'Grave'
+                    // A cor verde significa as demais (Leve, Moderada, etc.)
+                    const relatedOccurrences = data.filter(o => o.category === label);
+                    if (relatedOccurrences.some(o => o.highPotential)) {
+                        return '#dc3545'; // Vermelho para alto potencial
+                    }
+                    if (relatedOccurrences.some(o => o.severity === 'Grave')) {
+                        return '#ffc107'; // Amarelo para grave
+                    }
+                    return '#28a745'; // Verde para os demais
+                });
                 this.categoryChart.data.labels = labels;
                 this.categoryChart.data.datasets[0].data = chartData;
+                this.categoryChart.data.datasets[0].backgroundColor = backgroundColors;
                 this.categoryChart.update();
             }
 
@@ -653,16 +664,32 @@
                 const ctx = document.getElementById('occurrencesBySeverityChart').getContext('2d');
                 this.severityChart = new Chart(ctx, {
                     type: 'pie',
-                    data: { labels: [], datasets: [{ data: [] }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Gravidade' } } }
+                    data: { labels: ['Leve', 'Moderada', 'Grave'], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545'] }] },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: { display: true, text: 'Ocorrências por Gravidade' },
+                            datalabels: {
+                                color: '#fff',
+                                formatter: (value, context) => {
+                                    const total = context.chart.data.datasets[0].data.reduce((sum, current) => sum + current, 0);
+                                    if (total === 0) return '';
+                                    const percentage = (value / total * 100).toFixed(1) + '%';
+                                    return `${value} (${percentage})`;
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
                 });
             }
 
             updateOccurrencesBySeverityChart(data) {
-                const severityCounts = data.reduce((acc, o) => {
-                    acc[o.severity] = (acc[o.severity] || 0) + 1;
-                    return acc;
-                }, {});
+                const severityCounts = {
+                    'Leve': data.filter(o => o.severity === 'Leve').length,
+                    'Moderada': data.filter(o => o.severity === 'Moderada').length,
+                    'Grave': data.filter(o => o.severity === 'Grave').length,
+                };
                 const labels = Object.keys(severityCounts);
                 const chartData = Object.values(severityCounts);
                 this.severityChart.data.labels = labels;
@@ -675,7 +702,7 @@
                 const ctx = document.getElementById('occurrencesByLocationChart').getContext('2d');
                 this.locationChart = new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Localizações', data: [] }] },
+                    data: { labels: [], datasets: [{ label: 'Localizações', data: [], backgroundColor: 'rgba(0, 123, 255, 0.6)' }] },
                     options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Localização' } } }
                 });
             }
@@ -691,72 +718,43 @@
                 this.locationChart.data.datasets[0].data = chartData;
                 this.locationChart.update();
             }
-            
-            // Lógica para o gráfico de silhueta (novo)
+
+            // Criar gráfico de ocorrências por parte do corpo
+            createOccurrencesByBodyPartChart() {
+                const ctx = document.getElementById('occurrencesByBodyPartChart').getContext('2d');
+                this.bodyPartChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [{ label: 'Partes do Corpo', data: [], backgroundColor: [] }] },
+                    options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Parte do Corpo' } } }
+                });
+            }
+
             updateOccurrencesByBodyPartChart(data) {
                 const bodyPartCounts = data.reduce((acc, o) => {
                     acc[o.bodyPart] = (acc[o.bodyPart] || 0) + 1;
                     return acc;
                 }, {});
-
-                const bodyPartsMap = {
-                    'Mão': ['body-part-Mao-Esq', 'body-part-Mao-Dir'],
-                    'Cabeça': ['body-part-Cabeca'],
-                    'Joelho': ['body-part-Joelho-Esq', 'body-part-Joelho-Dir'],
-                    'Braço': ['body-part-Braco-Esq', 'body-part-Braco-Dir'],
-                    'Perna': ['body-part-Perna-Esq', 'body-part-Perna-Dir'],
-                    'Tronco': ['body-part-Tronco'],
-                    'Olho': ['body-part-Olho-Esq', 'body-part-Olho-Dir'],
-                    'Pé': ['body-part-Pe-Esq', 'body-part-Pe-Dir'],
-                    'Outra': ['body-part-Tronco'] // Adicionado para a categoria "Outra"
-                };
-
-                const severityColors = {
-                    'Leve': '#28a745',
-                    'Moderada': '#ffc107',
-                    'Grave': '#dc3545',
-                };
+                const labels = Object.keys(bodyPartCounts);
+                const chartData = Object.values(bodyPartCounts);
                 
-                const highPotentialColor = '#dc3545';
+                const bodyPartColors = {
+                    'Mão': '#ff6384',
+                    'Cabeça': '#4bc0c0',
+                    'Joelho': '#ff9f40',
+                    'Braço': '#36a2eb',
+                    'Perna': '#9966ff',
+                    'Tronco': '#c9cbcf',
+                    'Olho': '#ffcd56',
+                    'Pé': '#4bc0c0',
+                    'Outra': '#7f8c8d'
+                };
 
-                // Resetar cores e textos
-                document.querySelectorAll('.human-body-svg path, .human-body-svg circle').forEach(el => {
-                    el.style.fill = '#c9cbcf';
-                });
-                document.querySelectorAll('.body-part-text').forEach(el => {
-                    el.textContent = '';
-                });
+                const backgroundColors = labels.map(label => bodyPartColors[label] || '#7f8c8d');
 
-                for (const part of Object.keys(bodyPartCounts)) {
-                    if (bodyPartsMap[part]) {
-                        bodyPartsMap[part].forEach(svgId => {
-                            const svgElement = document.getElementById(svgId);
-                            if (svgElement) {
-                                // Encontrar a gravidade mais alta para a parte do corpo
-                                const relatedOccurrences = data.filter(o => o.bodyPart === part);
-                                const hasHighPotential = relatedOccurrences.some(o => o.highPotential);
-                                const hasGrave = relatedOccurrences.some(o => o.severity === 'Grave');
-                                const hasModerada = relatedOccurrences.some(o => o.severity === 'Moderada');
-
-                                let color = severityColors.Leve;
-                                if (hasHighPotential) {
-                                    color = highPotentialColor;
-                                } else if (hasGrave) {
-                                    color = severityColors.Grave;
-                                } else if (hasModerada) {
-                                    color = severityColors.Moderada;
-                                }
-                                svgElement.style.fill = color;
-                            }
-                        });
-                        
-                        const textId = `text-${part}`;
-                        const textElement = document.getElementById(textId);
-                        if (textElement) {
-                            textElement.textContent = bodyPartCounts[part];
-                        }
-                    }
-                }
+                this.bodyPartChart.data.labels = labels;
+                this.bodyPartChart.data.datasets[0].data = chartData;
+                this.bodyPartChart.data.datasets[0].backgroundColor = backgroundColors;
+                this.bodyPartChart.update();
             }
 
             // Criar gráfico de controle c-chart
