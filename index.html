@@ -3,855 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Ocorrências de SST</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            color: #0056b3;
-        }
-        .form-section, .dashboard-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="date"],
-        .form-group input[type="time"],
-        .form-group select,
-        .form-group textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-group input[type="checkbox"] {
-            margin-right: 10px;
-        }
-        .form-group button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-group button:hover {
-            background-color: #0056b3;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-        }
-        .chart-container {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-            min-height: 400px;
-        }
-        .full-width-chart {
-            grid-column: 1 / -1;
-        }
-        .generate-sample-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: background-color 0.3s;
-        }
-        .generate-sample-btn:hover {
-            background-color: #218838;
-        }
-        .stats-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #007bff;
-        }
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .form-group input[type="text"],
-            .form-group input[type="date"],
-            .form-group input[type="time"],
-            .form-group select,
-            .form-group textarea {
-                width: 100%;
-            }
-        }
-    </style>
+    <title>Sistema de Gestão de Segurança do Trabalho</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Registro de Ocorrências de SST</h1>
+        <div class="header">
+            <h1>Sistema de Gestão de Segurança do Trabalho</h1>
+            <p>Monitoramento e Análise de Ocorrências de SST</p>
+        </div>
 
-        <section class="form-section">
-            <h2>Registrar Nova Ocorrência</h2>
-            <form id="occurrenceForm">
-                <div class="form-group">
-                    <label for="occurrenceId">ID:</label>
-                    <input type="text" id="occurrenceId" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceDate">Data:</label>
-                    <input type="date" id="occurrenceDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceTime">Horário:</label>
-                    <input type="time" id="occurrenceTime" required>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceLocation">Localização:</label>
-                    <input type="text" id="occurrenceLocation" placeholder="Ex: Área de Produção, Escritório">
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceCategory">Categoria:</label>
-                    <select id="occurrenceCategory" required>
-                        <option value="">Selecione</option>
-                        <option value="Queda">Queda</option>
-                        <option value="Choque">Choque</option>
-                        <option value="Desvio">Desvio</option>
-                        <option value="Corte">Corte</option>
-                        <option value="Fratura">Fratura</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceSeverity">Gravidade:</label>
-                    <select id="occurrenceSeverity" required>
-                        <option value="">Selecione</option>
-                        <option value="Leve">Leve</option>
-                        <option value="Moderada">Moderada</option>
-                        <option value="Grave">Grave</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceType">Tipo:</label>
-                    <select id="occurrenceType" required>
-                        <option value="">Selecione</option>
-                        <option value="Acidente">Acidente</option>
-                        <option value="Incidente">Incidente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" id="occurrenceHighPotential">
-                    <label for="occurrenceHighPotential">Alto Potencial</label>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceBodyPart">Parte do Corpo:</label>
-                    <select id="occurrenceBodyPart">
-                        <option value="">Selecione</option>
-                        <option value="Mão">Mão</option>
-                        <option value="Cabeça">Cabeça</option>
-                        <option value="Joelho">Joelho</option>
-                        <option value="Braço">Braço</option>
-                        <option value="Perna">Perna</option>
-                        <option value="Tronco">Tronco</option>
-                        <option value="Olho">Olho</option>
-                        <option value="Pé">Pé</option>
-                        <option value="Outra">Outra</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceDescription">Descrição:</label>
-                    <textarea id="occurrenceDescription" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="occurrenceResponsibleManagement">Gerência Responsável:</label>
-                    <input type="text" id="occurrenceResponsibleManagement" placeholder="Ex: Manutenção, RH">
-                </div>
-                <div class="form-group">
-                    <button type="submit">Registrar Ocorrência</button>
-                </div>
-            </form>
-        </section>
+        <div class="section-card">
+            <div class="section-header">
+                📝 Registrar Nova Ocorrência
+            </div>
+            <div class="section-content">
+                <form id="occurrenceForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="occurrenceId">ID da Ocorrência</label>
+                            <input type="text" id="occurrenceId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceDate">Data da Ocorrência *</label>
+                            <input type="date" id="occurrenceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceTime">Horário *</label>
+                            <input type="time" id="occurrenceTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceLocation">Localização *</label>
+                            <input type="text" id="occurrenceLocation" placeholder="Ex: Área de Produção, Escritório" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceCategory">Categoria *</label>
+                            <select id="occurrenceCategory" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="Queda">Queda</option>
+                                <option value="Choque">Choque</option>
+                                <option value="Desvio">Desvio</option>
+                                <option value="Corte">Corte</option>
+                                <option value="Fratura">Fratura</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceSeverity">Gravidade *</label>
+                            <select id="occurrenceSeverity" required>
+                                <option value="">Selecione a gravidade</option>
+                                <option value="Leve">Leve</option>
+                                <option value="Moderada">Moderada</option>
+                                <option value="Grave">Grave</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceType">Tipo *</label>
+                            <select id="occurrenceType" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="Acidente">Acidente</option>
+                                <option value="Incidente">Incidente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceBodyPart">Parte do Corpo Afetada</label>
+                            <select id="occurrenceBodyPart">
+                                <option value="">Selecione</option>
+                                <option value="Mão">Mão</option>
+                                <option value="Cabeça">Cabeça</option>
+                                <option value="Joelho">Joelho</option>
+                                <option value="Braço">Braço</option>
+                                <option value="Perna">Perna</option>
+                                <option value="Tronco">Tronco</option>
+                                <option value="Olho">Olho</option>
+                                <option value="Pé">Pé</option>
+                                <option value="Outra">Outra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occurrenceResponsibleManagement">Gerência Responsável *</label>
+                            <input type="text" id="occurrenceResponsibleManagement" placeholder="Ex: Manutenção, RH" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="occurrenceHighPotential">
+                            <label for="occurrenceHighPotential">⚠️ Alto Potencial (Evento que em circunstâncias diferentes poderia ter resultado em fatalidade)</label>
+                        </div>
+                    </div>
 
-        <section class="dashboard-section">
-            <h2>Dashboards de Ocorrências</h2>
-            
-            <button class="generate-sample-btn" onclick="window.occurrenceManager && window.occurrenceManager.generateSampleData()">
-                Gerar 300 Ocorrências de Exemplo
+                    <div class="form-group">
+                        <label for="occurrenceDescription">Descrição Detalhada</label>
+                        <textarea id="occurrenceDescription" rows="4" placeholder="Descreva detalhadamente o que aconteceu..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Registrar Ocorrência</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="center-button-container">
+            <button class="btn btn-success" onclick="window.occurrenceManager.generateSampleData()">
+                🎲 Gerar 300 Ocorrências de Exemplo
             </button>
-            
-            <div class="stats-summary" id="statsSummary">
-                </div>
-            
-            <div class="dashboard-filters" style="margin-bottom: 20px; padding: 15px; background-color: #e9ecef; border-radius: 8px;">
-                <h3>Filtros</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <div>
-                        <label for="filterYear">Ano:</label>
-                        <select id="filterYear">
-                            <option value="">Todos</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="filterMonth">Mês:</label>
-                        <select id="filterMonth">
-                            <option value="">Todos</option>
-                            <option value="1">Janeiro</option>
-                            <option value="2">Fevereiro</option>
-                            <option value="3">Março</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Maio</option>
-                            <option value="6">Junho</option>
-                            <option value="7">Julho</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setembro</option>
-                            <option value="10">Outubro</option>
-                            <option value="11">Novembro</option>
-                            <option value="12">Dezembro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="filterCategory">Categoria:</label>
-                        <select id="filterCategory">
-                            <option value="">Todas</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="filterLocation">Localização:</label>
-                        <select id="filterLocation">
-                            <option value="">Todas</option>
-                        </select>
-                    </div>
-                </div>
-                <button id="applyFilters" style="margin-top: 10px; background-color: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Aplicar Filtros</button>
-                <button id="clearFilters" style="margin-top: 10px; margin-left: 10px; background-color: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Limpar Filtros</button>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                📊 Dashboard Geral de Ocorrências
             </div>
-            <div class="dashboard-grid">
-                <div class="chart-container full-width-chart">
-                    <canvas id="occurrencesByMonthChart"></canvas>
+            <div class="section-content">
+                <div class="stats-grid" id="statsSummary"></div>
+
+                <div class="filters-container">
+                    <div class="filters-title">🔍 Filtros de Análise</div>
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="filterYear">Ano</label>
+                            <select id="filterYear">
+                                <option value="">Todos os anos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterMonth">Mês</label>
+                            <select id="filterMonth">
+                                <option value="">Todos os meses</option>
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterType">Tipo</label>
+                            <select id="filterType">
+                                <option value="">Todos os tipos</option>
+                                <option value="Acidente">Acidente</option>
+                                <option value="Incidente">Incidente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterSeverity">Gravidade</label>
+                            <select id="filterSeverity">
+                                <option value="">Todas as gravidades</option>
+                                <option value="Leve">Leve</option>
+                                <option value="Moderada">Moderada</option>
+                                <option value="Grave">Grave</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterCategory">Categoria</label>
+                            <select id="filterCategory">
+                                <option value="">Todas as categorias</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterLocation">Localização</label>
+                            <select id="filterLocation">
+                                <option value="">Todas as localizações</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterBodyPart">Parte do Corpo</label>
+                            <select id="filterBodyPart">
+                                <option value="">Todas as partes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterManagement">Gerência</label>
+                            <select id="filterManagement">
+                                <option value="">Todas as gerências</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-buttons">
+                        <button id="applyFilters" class="btn-filter">Aplicar Filtros</button>
+                        <button id="clearFilters" class="btn-filter btn-clear">Limpar Filtros</button>
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="occurrencesByTypeChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="occurrencesByCategoryChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="occurrencesBySeverityChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="occurrencesByLocationChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="occurrencesByBodyPartChart"></canvas>
-                </div>
-                <div class="chart-container" style="grid-column: 1 / -1;">
-                    <canvas id="cControlChart"></canvas>
+
+                <div class="charts-grid">
+                    <div class="chart-container full-width">
+                        <div class="chart-title">📈 Evolução Mensal de Ocorrências</div>
+                        <canvas id="occurrencesByMonthChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">⚖️ Distribuição por Tipo</div>
+                        <canvas id="occurrencesByTypeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">📋 Ocorrências por Categoria</div>
+                        <canvas id="occurrencesByCategoryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">🌡️ Distribuição por Gravidade</div>
+                        <canvas id="occurrencesBySeverityChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">📍 Ocorrências por Localização</div>
+                        <canvas id="occurrencesByLocationChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">👤 Partes do Corpo Afetadas</div>
+                        <canvas id="occurrencesByBodyPartChart"></canvas>
+                    </div>
+                    <div class="chart-container full-width">
+                        <div class="chart-title">📊 Gráfico de Controle (C-Chart)</div>
+                        <canvas id="cControlChart"></canvas>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <div class="section-card high-potential-section">
+            <div class="section-header">
+                ⚠️ Dashboard de Eventos de Alto Potencial
+            </div>
+            <div class="section-content">
+                <div class="stats-grid" id="highPotentialStats"></div>
+                
+                <div class="charts-grid">
+                    <div class="chart-container full-width">
+                        <div class="chart-title">⚠️ Evolução de Eventos de Alto Potencial vs Demais</div>
+                        <canvas id="highPotentialTrendChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">⚠️ Alto Potencial por Categoria</div>
+                        <canvas id="highPotentialByCategoryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">⚠️ Alto Potencial por Localização</div>
+                        <canvas id="highPotentialByLocationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
-    <script>
-        // Classe para gerenciar ocorrências
-        class OccurrenceManager {
-            constructor() {
-                this.storageKey = 'sst_occurrences';
-                this.occurrences = this.loadOccurrences();
-                this.initializeForm();
-                this.initializeDashboards();
-            }
-
-            // Carregar ocorrências do localStorage
-            loadOccurrences() {
-                const stored = localStorage.getItem(this.storageKey);
-                return stored ? JSON.parse(stored) : [];
-            }
-
-            // Salvar ocorrências no localStorage
-            saveOccurrences() {
-                localStorage.setItem(this.storageKey, JSON.stringify(this.occurrences));
-            }
-
-            // Gerar ID único
-            generateId() {
-                return this.occurrences.length > 0 
-                    ? Math.max(...this.occurrences.map(o => o.id)) + 1 
-                    : 1;
-            }
-
-            // Inicializar formulário
-            initializeForm() {
-                const form = document.getElementById('occurrenceForm');
-                const idField = document.getElementById('occurrenceId');
-                const dateField = document.getElementById('occurrenceDate');
-
-                // Definir ID automático e data atual
-                idField.value = this.generateId();
-                dateField.value = dayjs().format('YYYY-MM-DD');
-
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.addOccurrence();
-                });
-            }
-
-            // Adicionar nova ocorrência
-            addOccurrence() {
-                const date = document.getElementById('occurrenceDate').value;
-                const dateObj = dayjs(date);
-
-                const occurrence = {
-                    id: this.generateId(),
-                    date: date,
-                    month: dateObj.month() + 1,
-                    year: dateObj.year(),
-                    time: document.getElementById('occurrenceTime').value,
-                    location: document.getElementById('occurrenceLocation').value,
-                    category: document.getElementById('occurrenceCategory').value,
-                    severity: document.getElementById('occurrenceSeverity').value,
-                    type: document.getElementById('occurrenceType').value,
-                    highPotential: document.getElementById('occurrenceHighPotential').checked,
-                    bodyPart: document.getElementById('occurrenceBodyPart').value,
-                    description: document.getElementById('occurrenceDescription').value,
-                    responsibleManagement: document.getElementById('occurrenceResponsibleManagement').value
-                };
-
-                this.occurrences.push(occurrence);
-                this.saveOccurrences();
-                this.resetForm();
-                this.updateDashboards();
-                alert('Ocorrência registrada com sucesso!');
-            }
-
-            // Resetar formulário
-            resetForm() {
-                document.getElementById('occurrenceForm').reset();
-                document.getElementById('occurrenceId').value = this.generateId();
-                document.getElementById('occurrenceDate').value = dayjs().format('YYYY-MM-DD');
-            }
-
-            // Gerar dados de exemplo
-            generateSampleData() {
-                const categories = ['Queda', 'Choque', 'Desvio', 'Corte', 'Fratura', 'Outro'];
-                const severities = ['Leve', 'Moderada', 'Grave'];
-                const types = ['Acidente', 'Incidente'];
-                const bodyParts = ['Mão', 'Cabeça', 'Joelho', 'Braço', 'Perna', 'Tronco', 'Olho', 'Pé'];
-                const locations = ['Área de Produção', 'Escritório', 'Almoxarifado', 'Laboratório', 'Oficina', 'Pátio'];
-                const managements = ['Produção', 'Manutenção', 'RH', 'Qualidade', 'Logística'];
-
-                const sampleOccurrences = [];
-                
-                for (let i = 0; i < 300; i++) {
-                    const randomDate = dayjs().subtract(Math.floor(Math.random() * 730), 'day');
-                    
-                    const occurrence = {
-                        id: i + 1,
-                        date: randomDate.format('YYYY-MM-DD'),
-                        month: randomDate.month() + 1,
-                        year: randomDate.year(),
-                        time: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-                        location: locations[Math.floor(Math.random() * locations.length)],
-                        category: categories[Math.floor(Math.random() * categories.length)],
-                        severity: severities[Math.floor(Math.random() * severities.length)],
-                        type: types[Math.floor(Math.random() * types.length)],
-                        highPotential: Math.random() > 0.8,
-                        bodyPart: bodyParts[Math.floor(Math.random() * bodyParts.length)],
-                        description: 'Descrição de exemplo',
-                        responsibleManagement: managements[Math.floor(Math.random() * managements.length)]
-                    };
-                    sampleOccurrences.push(occurrence);
-                }
-
-                this.occurrences = sampleOccurrences;
-                this.saveOccurrences();
-                this.updateDashboards();
-                alert('300 ocorrências de exemplo geradas com sucesso!');
-            }
-
-            // Inicializar dashboards
-            initializeDashboards() {
-                this.createOccurrencesByMonthChart();
-                this.createOccurrencesByTypeChart();
-                this.createOccurrencesByCategoryChart();
-                this.createOccurrencesBySeverityChart();
-                this.createOccurrencesByLocationChart();
-                this.createOccurrencesByBodyPartChart();
-                this.createCControlChart();
-                this.initializeFilters();
-                this.updateDashboards();
-            }
-
-            // Inicializar filtros
-            initializeFilters() {
-                const yearFilter = document.getElementById('filterYear');
-                const categoryFilter = document.getElementById('filterCategory');
-                const locationFilter = document.getElementById('filterLocation');
-
-                const years = [...new Set(this.occurrences.map(o => o.year))].sort();
-                years.forEach(year => {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    yearFilter.appendChild(option);
-                });
-
-                const categories = [...new Set(this.occurrences.map(o => o.category))];
-                categories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category;
-                    option.textContent = category;
-                    categoryFilter.appendChild(option);
-                });
-
-                const locations = [...new Set(this.occurrences.map(o => o.location))];
-                locations.forEach(location => {
-                    const option = document.createElement('option');
-                    option.value = location;
-                    option.textContent = location;
-                    locationFilter.appendChild(option);
-                });
-
-                document.getElementById('applyFilters').addEventListener('click', () => this.updateDashboards());
-                document.getElementById('clearFilters').addEventListener('click', () => {
-                    document.getElementById('filterYear').value = '';
-                    document.getElementById('filterMonth').value = '';
-                    document.getElementById('filterCategory').value = '';
-                    document.getElementById('filterLocation').value = '';
-                    this.updateDashboards();
-                });
-            }
-
-            // Atualizar dashboards
-            updateDashboards() {
-                const year = document.getElementById('filterYear').value;
-                const month = document.getElementById('filterMonth').value;
-                const category = document.getElementById('filterCategory').value;
-                const location = document.getElementById('filterLocation').value;
-
-                const filteredOccurrences = this.occurrences.filter(o => 
-                    (!year || o.year == year) &&
-                    (!month || o.month == month) &&
-                    (!category || o.category === category) &&
-                    (!location || o.location === location)
-                );
-
-                this.updateSummary(filteredOccurrences);
-                this.updateOccurrencesByMonthChart(filteredOccurrences);
-                this.updateOccurrencesByTypeChart(filteredOccurrences);
-                this.updateOccurrencesByCategoryChart(filteredOccurrences);
-                this.updateOccurrencesBySeverityChart(filteredOccurrences);
-                this.updateOccurrencesByLocationChart(filteredOccurrences);
-                this.updateOccurrencesByBodyPartChart(filteredOccurrences);
-                this.updateCControlChart(filteredOccurrences);
-            }
-
-            // Atualizar resumo estatístico
-            updateSummary(data) {
-                const summaryContainer = document.getElementById('statsSummary');
-                summaryContainer.innerHTML = '';
-
-                const total = data.length;
-                const accidents = data.filter(o => o.type === 'Acidente').length;
-                const incidents = data.filter(o => o.type === 'Incidente').length;
-                const highPotential = data.filter(o => o.highPotential).length;
-
-                const stats = [
-                    { label: 'Total de Ocorrências', value: total },
-                    { label: 'Acidentes', value: accidents },
-                    { label: 'Incidentes', value: incidents },
-                    { label: 'Alto Potencial', value: highPotential }
-                ];
-
-                stats.forEach(stat => {
-                    const card = document.createElement('div');
-                    card.className = 'stat-card';
-                    card.innerHTML = `<div class="stat-number">${stat.value}</div><div class="stat-label">${stat.label}</div>`;
-                    summaryContainer.appendChild(card);
-                });
-            }
-
-            // Criar gráfico de ocorrências por mês (alterado para barras empilhadas)
-            createOccurrencesByMonthChart() {
-                const ctx = document.getElementById('occurrencesByMonthChart').getContext('2d');
-                this.monthChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [] },
-                    options: {
-                        responsive: true,
-                        plugins: { 
-                            title: { display: true, text: 'Ocorrências por Mês' }
-                        },
-                        scales: {
-                            x: { stacked: true },
-                            y: { stacked: true }
-                        }
-                    }
-                });
-            }
-
-            updateOccurrencesByMonthChart(data) {
-                const monthlyData = data.reduce((acc, o) => {
-                    const monthYear = `${o.month}-${o.year}`;
-                    acc[monthYear] = acc[monthYear] || { lowSeverity: 0, grave: 0, highPotential: 0 };
-                    
-                    if (o.highPotential) {
-                        acc[monthYear].highPotential++;
-                    } else if (o.severity === 'Grave') {
-                        acc[monthYear].grave++;
-                    } else {
-                        acc[monthYear].lowSeverity++;
-                    }
-                    return acc;
-                }, {});
-
-                const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
-                    const [monthA, yearA] = a.split('-').map(Number);
-                    const [monthB, yearB] = b.split('-').map(Number);
-                    if (yearA !== yearB) return yearA - yearB;
-                    return monthA - monthB;
-                });
-
-                const labels = sortedMonths.map(m => {
-                    const [month, year] = m.split('-');
-                    return dayjs().month(Number(month) - 1).format('MMM') + (year !== dayjs().year() ? ` ${year}` : '');
-                });
-
-                const lowSeverityData = sortedMonths.map(m => monthlyData[m].lowSeverity);
-                const graveData = sortedMonths.map(m => monthlyData[m].grave);
-                const highPotentialData = sortedMonths.map(m => monthlyData[m].highPotential);
-
-                this.monthChart.data.labels = labels;
-                this.monthChart.data.datasets = [
-                    {
-                        label: 'Baixa Gravidade',
-                        data: lowSeverityData,
-                        backgroundColor: '#28a745'
-                    },
-                    {
-                        label: 'Grave',
-                        data: graveData,
-                        backgroundColor: '#ffc107'
-                    },
-                    {
-                        label: 'Alto Potencial',
-                        data: highPotentialData,
-                        backgroundColor: '#dc3545'
-                    }
-                ];
-                this.monthChart.update();
-            }
-
-            // Criar gráfico de ocorrências por tipo (com valores nos rótulos)
-            createOccurrencesByTypeChart() {
-                const ctx = document.getElementById('occurrencesByTypeChart').getContext('2d');
-                this.typeChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: { labels: ['Acidente', 'Incidente'], datasets: [{ data: [], backgroundColor: ['#dc3545', '#007bff'] }] },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: { display: true, text: 'Ocorrências por Tipo' },
-                            datalabels: {
-                                color: '#fff',
-                                formatter: (value, context) => {
-                                    const total = context.chart.data.datasets[0].data.reduce((sum, current) => sum + current, 0);
-                                    if (total === 0) return '';
-                                    const percentage = (value / total * 100).toFixed(1) + '%';
-                                    return `${value} (${percentage})`;
-                                }
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            }
-
-            updateOccurrencesByTypeChart(data) {
-                const typeCounts = {
-                    'Acidente': data.filter(o => o.type === 'Acidente').length,
-                    'Incidente': data.filter(o => o.type === 'Incidente').length,
-                };
-                const labels = Object.keys(typeCounts);
-                const chartData = Object.values(typeCounts);
-                this.typeChart.data.labels = labels;
-                this.typeChart.data.datasets[0].data = chartData;
-                this.typeChart.update();
-            }
-
-            // Criar gráfico de ocorrências por categoria
-            createOccurrencesByCategoryChart() {
-                const ctx = document.getElementById('occurrencesByCategoryChart').getContext('2d');
-                this.categoryChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Categorias', data: [], backgroundColor: [] }] },
-                    options: { responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Categoria' } } }
-                });
-            }
-
-            updateOccurrencesByCategoryChart(data) {
-                const categoryCounts = data.reduce((acc, o) => {
-                    acc[o.category] = (acc[o.category] || 0) + 1;
-                    return acc;
-                }, {});
-                const labels = Object.keys(categoryCounts);
-                const chartData = Object.values(categoryCounts);
-                const backgroundColors = labels.map(label => {
-                    // A cor vermelha significa 'Alto Potencial'
-                    // A cor amarela significa 'Grave'
-                    // A cor verde significa as demais (Leve, Moderada, etc.)
-                    const relatedOccurrences = data.filter(o => o.category === label);
-                    if (relatedOccurrences.some(o => o.highPotential)) {
-                        return '#dc3545'; // Vermelho para alto potencial
-                    }
-                    if (relatedOccurrences.some(o => o.severity === 'Grave')) {
-                        return '#ffc107'; // Amarelo para grave
-                    }
-                    return '#28a745'; // Verde para os demais
-                });
-                this.categoryChart.data.labels = labels;
-                this.categoryChart.data.datasets[0].data = chartData;
-                this.categoryChart.data.datasets[0].backgroundColor = backgroundColors;
-                this.categoryChart.update();
-            }
-
-            // Criar gráfico de ocorrências por gravidade
-            createOccurrencesBySeverityChart() {
-                const ctx = document.getElementById('occurrencesBySeverityChart').getContext('2d');
-                this.severityChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: { labels: ['Leve', 'Moderada', 'Grave'], datasets: [{ data: [], backgroundColor: ['#28a745', '#ffc107', '#dc3545'] }] },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: { display: true, text: 'Ocorrências por Gravidade' },
-                            datalabels: {
-                                color: '#fff',
-                                formatter: (value, context) => {
-                                    const total = context.chart.data.datasets[0].data.reduce((sum, current) => sum + current, 0);
-                                    if (total === 0) return '';
-                                    const percentage = (value / total * 100).toFixed(1) + '%';
-                                    return `${value} (${percentage})`;
-                                }
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            }
-
-            updateOccurrencesBySeverityChart(data) {
-                const severityCounts = {
-                    'Leve': data.filter(o => o.severity === 'Leve').length,
-                    'Moderada': data.filter(o => o.severity === 'Moderada').length,
-                    'Grave': data.filter(o => o.severity === 'Grave').length,
-                };
-                const labels = Object.keys(severityCounts);
-                const chartData = Object.values(severityCounts);
-                this.severityChart.data.labels = labels;
-                this.severityChart.data.datasets[0].data = chartData;
-                this.severityChart.update();
-            }
-
-            // Criar gráfico de ocorrências por localização
-            createOccurrencesByLocationChart() {
-                const ctx = document.getElementById('occurrencesByLocationChart').getContext('2d');
-                this.locationChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Localizações', data: [], backgroundColor: 'rgba(0, 123, 255, 0.6)' }] },
-                    options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Localização' } } }
-                });
-            }
-
-            updateOccurrencesByLocationChart(data) {
-                const locationCounts = data.reduce((acc, o) => {
-                    acc[o.location] = (acc[o.location] || 0) + 1;
-                    return acc;
-                }, {});
-                const labels = Object.keys(locationCounts);
-                const chartData = Object.values(locationCounts);
-                this.locationChart.data.labels = labels;
-                this.locationChart.data.datasets[0].data = chartData;
-                this.locationChart.update();
-            }
-
-            // Criar gráfico de ocorrências por parte do corpo
-            createOccurrencesByBodyPartChart() {
-                const ctx = document.getElementById('occurrencesByBodyPartChart').getContext('2d');
-                this.bodyPartChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: [], datasets: [{ label: 'Partes do Corpo', data: [], backgroundColor: [] }] },
-                    options: { indexAxis: 'y', responsive: true, plugins: { title: { display: true, text: 'Ocorrências por Parte do Corpo' } } }
-                });
-            }
-
-            updateOccurrencesByBodyPartChart(data) {
-                const bodyPartCounts = data.reduce((acc, o) => {
-                    acc[o.bodyPart] = (acc[o.bodyPart] || 0) + 1;
-                    return acc;
-                }, {});
-                const labels = Object.keys(bodyPartCounts);
-                const chartData = Object.values(bodyPartCounts);
-                
-                const bodyPartColors = {
-                    'Mão': '#ff6384',
-                    'Cabeça': '#4bc0c0',
-                    'Joelho': '#ff9f40',
-                    'Braço': '#36a2eb',
-                    'Perna': '#9966ff',
-                    'Tronco': '#c9cbcf',
-                    'Olho': '#ffcd56',
-                    'Pé': '#4bc0c0',
-                    'Outra': '#7f8c8d'
-                };
-
-                const backgroundColors = labels.map(label => bodyPartColors[label] || '#7f8c8d');
-
-                this.bodyPartChart.data.labels = labels;
-                this.bodyPartChart.data.datasets[0].data = chartData;
-                this.bodyPartChart.data.datasets[0].backgroundColor = backgroundColors;
-                this.bodyPartChart.update();
-            }
-
-            // Criar gráfico de controle c-chart
-            createCControlChart() {
-                const ctx = document.getElementById('cControlChart').getContext('2d');
-                this.cChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [
-                            {
-                                label: 'Ocorrências',
-                                data: [],
-                                borderColor: 'rgb(75, 192, 192)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                                tension: 0
-                            },
-                            {
-                                label: 'Limite Superior (UCL)',
-                                data: [],
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'transparent',
-                                borderDash: [10, 5],
-                                pointRadius: 0,
-                                tension: 0
-                            },
-                            {
-                                label: 'Média (CL)',
-                                data: [],
-                                borderColor: 'rgb(54, 162, 235)',
-                                backgroundColor: 'transparent',
-                                borderDash: [10, 5],
-                                pointRadius: 0,
-                                tension: 0
-                            },
-                            {
-                                label: 'Limite Inferior (LCL)',
-                                data: [],
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'transparent',
-                                borderDash: [5, 5],
-                                pointRadius: 0,
-                                tension: 0
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Gráfico de Controle (c-chart)'
-                            }
-                        }
-                    }
-                });
-            }
-
-            updateCControlChart(data) {
-                const monthlyCounts = {};
-                data.forEach(o => {
-                    const monthYear = `${o.year}-${String(o.month).padStart(2, '0')}`;
-                    monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1;
-                });
-
-                const sortedMonths = Object.keys(monthlyCounts).sort();
-                const labels = sortedMonths;
-                const counts = sortedMonths.map(m => monthlyCounts[m]);
-
-                const n = counts.length;
-                if (n === 0) {
-                    this.cChart.data.labels = [];
-                    this.cChart.data.datasets.forEach(ds => ds.data = []);
-                    this.cChart.update();
-                    return;
-                }
-
-                const cBar = counts.reduce((a, b) => a + b, 0) / n;
-                const ucl = cBar + 3 * Math.sqrt(cBar);
-                const lcl = Math.max(0, cBar - 3 * Math.sqrt(cBar));
-
-                const pointColors = counts.map(c => (c > ucl || c < lcl) ? 'red' : 'rgb(75, 192, 192)');
-
-                this.cChart.data.labels = labels;
-                this.cChart.data.datasets[0].data = counts;
-                this.cChart.data.datasets[0].pointBackgroundColor = pointColors;
-                this.cChart.data.datasets[0].pointBorderColor = pointColors;
-                this.cChart.data.datasets[1].data = new Array(n).fill(ucl);
-                this.cChart.data.datasets[2].data = new Array(n).fill(cBar);
-                this.cChart.data.datasets[3].data = new Array(n).fill(lcl);
-                this.cChart.update();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            window.occurrenceManager = new OccurrenceManager();
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
